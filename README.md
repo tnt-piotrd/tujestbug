@@ -15,7 +15,7 @@ Aby uruchomić kod projektu otwórz go za pomocą opcji w IntelliJ:
 4. Prawdopodobnie będziesz musiał zaznaczyć opcję 'Trust this path...'
 5. Po otworzeniu projektu zostaną pobrane publiczne biblioteki, których użyłem w projekcie
 6. Aby uruchomić testy przejdź do katalogu src/test i naciśnij PPM na dowolną klasę testową
-7. Następnie wybierz 'Run <nazwaKlasy'
+7. Następnie wybierz 'Run < nazwaKlasy >'
 8. Gotowe!
 
 
