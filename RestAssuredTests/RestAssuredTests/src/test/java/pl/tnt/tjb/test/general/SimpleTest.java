@@ -34,15 +34,16 @@ public class SimpleTest {
     @Test
     public void verifyHeadersAreSent(){
         given()
-                .config(config().encoderConfig(EncoderConfig.encoderConfig()
-                        .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
-                .baseUri("https://postman-echo.com")
-                .header("myheader", HEADER_VALUE)
-                .when()
-                .post("/post")
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("headers.myheader", equalTo(HEADER_VALUE));
+            .config(config().encoderConfig(EncoderConfig.encoderConfig()
+            .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+            .baseUri("https://postman-echo.com")
+            .header("myheader", HEADER_VALUE)
+            .when()
+            .log().all()
+            .post("/post")
+            .then()
+            .log().all()
+            .statusCode(200)
+            .body("headers.myheader", equalTo(HEADER_VALUE));
     }
 }
