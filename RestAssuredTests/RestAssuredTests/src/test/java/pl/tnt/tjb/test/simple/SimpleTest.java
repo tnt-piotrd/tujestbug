@@ -1,4 +1,4 @@
-package pl.tnt.tjb.test.general;
+package pl.tnt.tjb.test.simple;
 
 import io.restassured.config.EncoderConfig;
 import org.testng.annotations.Test;
