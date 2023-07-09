@@ -17,7 +17,7 @@ public class MySpecBuilder {
     private static final String HEADER_VALUE = "tu_jest_bug";
 
     public static RequestSpecification getPostmanEchoRequestSpec(){
-        return getPostmanEchoSpec(Map.of("myHeader", HEADER_VALUE)));
+        return getPostmanEchoRequestSpec(Map.of("myHeader", HEADER_VALUE));
     }
 
     public static RequestSpecification getPostmanEchoRequestSpec(Map<String, String> headers){
@@ -38,7 +38,7 @@ public class MySpecBuilder {
     }
 
     public static ResponseSpecification getPostmanEchoResponseSpec(){
-        new ResponseSpecBuilder()
+        return new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .expectContentType(ContentType.JSON)
                 .expectBody("headers.myheader", equalTo(HEADER_VALUE))
