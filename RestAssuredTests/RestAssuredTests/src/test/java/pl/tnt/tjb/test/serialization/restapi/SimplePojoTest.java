@@ -7,7 +7,8 @@ import java.io.File;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static pl.tnt.tjb.test.spec.MySpecBuilder.*;
+import static pl.tnt.tjb.test.spec.MySpecBuilder.getPostmanEchoJsonRequestSpec;
+import static pl.tnt.tjb.test.spec.MySpecBuilder.getPostmanEchoResponseSpec;
 
 public class SimplePojoTest {
 
@@ -29,14 +30,14 @@ public class SimplePojoTest {
     public void shouldBeAbleToSendPojoAsJson() {
         SimplePojo simplePojo = new SimplePojo("value1", "value2");
 
-        given(getPostmanEchoRequestSpec())
+        given(getPostmanEchoJsonRequestSpec())
                 .body(simplePojo)
                 .when()
                 .post("/post")
                 .then()
                 .spec(getPostmanEchoResponseSpec())
                 .assertThat()
-                .body("key1", equalTo(simplePojo.getKey1()),
-                        "key2", equalTo(simplePojo.getKey2()));
+                .body("json.key1", equalTo(simplePojo.getKey1()),
+                        "json.key2", equalTo(simplePojo.getKey2()));
     }
 }
