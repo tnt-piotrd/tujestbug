@@ -10,7 +10,8 @@ import io.restassured.specification.ResponseSpecification;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.config;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 public class RequestSpecBuilderTest {
@@ -19,7 +20,7 @@ public class RequestSpecBuilderTest {
     private ResponseSpecification responseSpecification;
 
     @BeforeMethod
-    public void setup(){
+    public void setup() {
         requestSpecification = new RequestSpecBuilder()
                 .setBaseUri("https://postman-echo.com")
                 .setConfig(config().encoderConfig(EncoderConfig.encoderConfig()
@@ -37,11 +38,11 @@ public class RequestSpecBuilderTest {
     }
 
     @Test
-    public void postmanShouldEchoHeaders(){
+    public void postmanShouldEchoHeaders() {
         given(requestSpecification)
-            .when()
+                .when()
                 .post("/post")
-            .then()
+                .then()
                 .spec(responseSpecification);
     }
 }

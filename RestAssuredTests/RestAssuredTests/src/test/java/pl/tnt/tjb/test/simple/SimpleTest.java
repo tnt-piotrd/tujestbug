@@ -12,38 +12,38 @@ public class SimpleTest {
     private static final String HEADER_VALUE = "tu_jest_bug";
 
     @Test
-    public void getFirstUserDataTest(){
+    public void getFirstUserDataTest() {
         given()
-            .when()
-            .get("https://reqres.in/api/users/1")
-            .then()
-            .statusCode(200);
+                .when()
+                .get("https://reqres.in/api/users/1")
+                .then()
+                .statusCode(200);
     }
 
     @Test
-    public void verifySecondUserLastNameTest(){
+    public void verifySecondUserLastNameTest() {
         given()
-            .baseUri("https://reqres.in/api")
-            .pathParam("userId", 2)
-            .when()
-            .get("/users/{userId}")
-            .then()
-            .body("data.last_name", equalTo("Weaver"));
+                .baseUri("https://reqres.in/api")
+                .pathParam("userId", 2)
+                .when()
+                .get("/users/{userId}")
+                .then()
+                .body("data.last_name", equalTo("Weaver"));
     }
 
     @Test
-    public void verifyHeadersAreSent(){
+    public void verifyHeadersAreSent() {
         given()
-            .config(config().encoderConfig(EncoderConfig.encoderConfig()
-            .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
-            .baseUri("https://postman-echo.com")
-            .header("myheader", HEADER_VALUE)
-            .when()
-            .log().all()
-            .post("/post")
-            .then()
-            .log().all()
-            .statusCode(200)
-            .body("headers.myheader", equalTo(HEADER_VALUE));
+                .config(config().encoderConfig(EncoderConfig.encoderConfig()
+                        .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+                .baseUri("https://postman-echo.com")
+                .header("myheader", HEADER_VALUE)
+                .when()
+                .log().all()
+                .post("/post")
+                .then()
+                .log().all()
+                .statusCode(200)
+                .body("headers.myheader", equalTo(HEADER_VALUE));
     }
 }

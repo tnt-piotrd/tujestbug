@@ -1,4 +1,4 @@
-package pl.tnt.tjb.serialization;
+package pl.tnt.tjb.serialization.java;
 
 import java.io.Serializable;
 import java.util.Objects;

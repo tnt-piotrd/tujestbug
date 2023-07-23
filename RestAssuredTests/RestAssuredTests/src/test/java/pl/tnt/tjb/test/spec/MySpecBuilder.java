@@ -16,11 +16,16 @@ import static org.hamcrest.CoreMatchers.equalTo;
 public class MySpecBuilder {
     private static final String HEADER_VALUE = "tu_jest_bug";
 
-    public static RequestSpecification getPostmanEchoRequestSpec(){
+    public static RequestSpecification getPostmanEchoJsonRequestSpec() {
+        return getPostmanEchoRequestSpec()
+                .contentType(ContentType.JSON);
+    }
+
+    public static RequestSpecification getPostmanEchoRequestSpec() {
         return getPostmanEchoRequestSpec(Map.of("myHeader", HEADER_VALUE));
     }
 
-    public static RequestSpecification getPostmanEchoRequestSpec(Map<String, String> headers){
+    public static RequestSpecification getPostmanEchoRequestSpec(Map<String, String> headers) {
         return new RequestSpecBuilder()
                 .setBaseUri("https://postman-echo.com")
                 .setConfig(config().encoderConfig(EncoderConfig.encoderConfig()
@@ -30,14 +35,14 @@ public class MySpecBuilder {
                 .build();
     }
 
-    public static RequestSpecification getReqresInRequestSpec(){
+    public static RequestSpecification getReqresInRequestSpec() {
         return new RequestSpecBuilder()
                 .setBaseUri("https://reqres.in/api")
                 .log(LogDetail.ALL)
                 .build();
     }
 
-    public static ResponseSpecification getPostmanEchoResponseSpec(){
+    public static ResponseSpecification getPostmanEchoResponseSpec() {
         return new ResponseSpecBuilder()
                 .expectStatusCode(200)
                 .expectContentType(ContentType.JSON)

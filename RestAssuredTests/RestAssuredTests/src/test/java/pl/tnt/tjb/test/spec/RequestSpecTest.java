@@ -17,7 +17,7 @@ public class RequestSpecTest {
     private ResponseSpecification responseSpecification;
 
     @BeforeMethod
-    public void setup(){
+    public void setup() {
         requestSpecification = given()
                 .config(config().encoderConfig(EncoderConfig.encoderConfig()
                         .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
@@ -33,16 +33,16 @@ public class RequestSpecTest {
     }
 
     @Test
-    public void postmanShouldEchoHeaders(){
+    public void postmanShouldEchoHeaders() {
         given(requestSpecification)
-            .when()
+                .when()
                 .post("/post")
-            .then()
+                .then()
                 .spec(responseSpecification);
     }
 
     @Test
-    public void postmanShouldEchoTwoHeaders(){
+    public void postmanShouldEchoTwoHeaders() {
         given(requestSpecification)
                 .header("additionalheader", SECOND_HEADER_VALUE)
                 .when()
