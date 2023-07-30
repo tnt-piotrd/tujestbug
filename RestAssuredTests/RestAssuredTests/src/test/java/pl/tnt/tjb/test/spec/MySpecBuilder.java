@@ -7,6 +7,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
+import org.apache.http.HttpStatus;
 
 import java.util.Map;
 
@@ -39,6 +40,13 @@ public class MySpecBuilder {
         return new RequestSpecBuilder()
                 .setBaseUri("https://reqres.in/api")
                 .log(LogDetail.ALL)
+                .build();
+    }
+
+    public static ResponseSpecification getReqresResponseSpec() {
+        return new ResponseSpecBuilder()
+                .expectContentType(ContentType.JSON)
+                .expectStatusCode(HttpStatus.SC_OK)
                 .build();
     }
 

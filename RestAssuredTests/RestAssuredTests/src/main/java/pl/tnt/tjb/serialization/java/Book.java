@@ -4,7 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Book implements Serializable {
-    private String title, author;
+    private final String title;
+    private final String author;
 
     public Book(String title, String author) {
         this.title = title;
