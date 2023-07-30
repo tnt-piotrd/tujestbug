@@ -38,7 +38,7 @@
                     <configuration>
                         <suiteXmlFiles>
                             <suiteXmlFile>
-                                src\test\resources\RegressionSuite.xml
+                                src\test\resources\Suites\RegressionSuite.xml
                             </suiteXmlFile>
                         </suiteXmlFiles>
                     </configuration>
