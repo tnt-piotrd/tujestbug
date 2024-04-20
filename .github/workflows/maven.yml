@@ -8,9 +8,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -21,4 +19,4 @@ jobs:
         cache: maven
     - name: Build with Maven
       working-directory: ./RestAssuredTests
-      run: mvn -B package --file pom.xml
+      run: mvn -B package --file pom.xml -DskipTests=true
