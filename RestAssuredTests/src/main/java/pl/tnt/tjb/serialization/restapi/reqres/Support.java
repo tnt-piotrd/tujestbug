@@ -5,22 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "url",
-        "text"
-})
+@JsonPropertyOrder({"url", "text"})
 public class Support {
 
     @JsonProperty("url")
     private String url;
+
     @JsonProperty("text")
     private String text;
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public Support() {
-    }
+    /** No args constructor for use in serialization */
+    public Support() {}
 
     /**
      * @param text
@@ -51,5 +46,4 @@ public class Support {
     public void setText(String text) {
         this.text = text;
     }
-
 }

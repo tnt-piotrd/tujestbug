@@ -5,22 +5,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "data",
-        "support"
-})
+@JsonPropertyOrder({"data", "support"})
 public class ReqResResponsePojo {
 
     @JsonProperty("data")
     private Data data;
+
     @JsonProperty("support")
     private Support support;
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public ReqResResponsePojo() {
-    }
+    /** No args constructor for use in serialization */
+    public ReqResResponsePojo() {}
 
     /**
      * @param data
@@ -51,5 +46,4 @@ public class ReqResResponsePojo {
     public void setSupport(Support support) {
         this.support = support;
     }
-
 }

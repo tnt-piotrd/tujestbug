@@ -5,31 +5,26 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "id",
-        "email",
-        "first_name",
-        "last_name",
-        "avatar"
-})
+@JsonPropertyOrder({"id", "email", "first_name", "last_name", "avatar"})
 public class Data {
 
     @JsonProperty("id")
     private Integer id;
+
     @JsonProperty("email")
     private String email;
+
     @JsonProperty("first_name")
     private String firstName;
+
     @JsonProperty("last_name")
     private String lastName;
+
     @JsonProperty("avatar")
     private String avatar;
 
-    /**
-     * No args constructor for use in serialization
-     */
-    public Data() {
-    }
+    /** No args constructor for use in serialization */
+    public Data() {}
 
     /**
      * @param firstName
@@ -96,5 +91,4 @@ public class Data {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
-
 }

@@ -1,17 +1,16 @@
 package pl.tnt.tjb.test.serialization.java;
 
+import static org.testng.Assert.assertEquals;
+
+import java.io.File;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 import pl.tnt.tjb.serialization.java.Book;
 import pl.tnt.tjb.serialization.java.Serialization;
 
-import java.io.File;
-
-import static org.testng.Assert.assertEquals;
-
 public class BookTest {
-    private final static String FILE_NAME = "book";
-    private final static Book LOTR_BOOK = new Book("Lord of The Rings", "J.R.R. Tolkien");
+    private static final String FILE_NAME = "book";
+    private static final Book LOTR_BOOK = new Book("Lord of The Rings", "J.R.R. Tolkien");
 
     @Test
     public void shouldBeAbleToSerializeBook() {

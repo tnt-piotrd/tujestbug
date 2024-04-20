@@ -1,11 +1,11 @@
 package pl.tnt.tjb.test.simple;
 
-import io.restassured.config.EncoderConfig;
-import org.testng.annotations.Test;
-
 import static io.restassured.RestAssured.config;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+
+import io.restassured.config.EncoderConfig;
+import org.testng.annotations.Test;
 
 public class SimpleTest {
 
@@ -13,17 +13,12 @@ public class SimpleTest {
 
     @Test
     public void getFirstUserDataTest() {
-        given()
-                .when()
-                .get("https://reqres.in/api/users/1")
-                .then()
-                .statusCode(200);
+        given().when().get("https://reqres.in/api/users/1").then().statusCode(200);
     }
 
     @Test
     public void verifySecondUserLastNameTest() {
-        given()
-                .baseUri("https://reqres.in/api")
+        given().baseUri("https://reqres.in/api")
                 .pathParam("userId", 2)
                 .when()
                 .get("/users/{userId}")
@@ -33,16 +28,20 @@ public class SimpleTest {
 
     @Test
     public void verifyHeadersAreSent() {
-        given()
-                .config(config().encoderConfig(EncoderConfig.encoderConfig()
-                        .appendDefaultContentCharsetToContentTypeIfUndefined(false)))
+        given().config(
+                        config().encoderConfig(
+                                        EncoderConfig.encoderConfig()
+                                                .appendDefaultContentCharsetToContentTypeIfUndefined(
+                                                        false)))
                 .baseUri("https://postman-echo.com")
                 .header("myheader", HEADER_VALUE)
                 .when()
-                .log().all()
+                .log()
+                .all()
                 .post("/post")
                 .then()
-                .log().all()
+                .log()
+                .all()
                 .statusCode(200)
                 .body("headers.myheader", equalTo(HEADER_VALUE));
     }
