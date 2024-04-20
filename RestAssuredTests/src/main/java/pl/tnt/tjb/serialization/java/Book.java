@@ -2,6 +2,7 @@ package pl.tnt.tjb.serialization.java;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.io.File;
 
 public class Book implements Serializable {
     private final String title;
