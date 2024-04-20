@@ -20,3 +20,7 @@ jobs:
     - name: Build with Maven
       working-directory: ./RestAssuredTests
       run: mvn -B package --file pom.xml -DskipTests=true
+
+    - name: Verify code formatting
+      working-directory: ./RestAssuredTests
+      run: mvn spotless:check --file pom.xml
