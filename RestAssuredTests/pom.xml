@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pl.tnt.tujestbug</groupId>
+    <groupId>pl.tujestbug</groupId>
     <artifactId>RestAssuredTests</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -35,8 +35,9 @@
     </dependencies>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <testSuite>RegressionSuite</testSuite>
     </properties>
 
     <build>
@@ -49,7 +50,7 @@
                     <configuration>
                         <suiteXmlFiles>
                             <suiteXmlFile>
-                                src\test\resources\Suites\RegressionSuite.xml
+                                src\test\resources\Suites\${testSuite}.xml
                             </suiteXmlFile>
                         </suiteXmlFiles>
                     </configuration>
