@@ -58,7 +58,7 @@ public abstract class AbstractTable {
         return allRowsData;
     }
 
-    private int getRowNumberHavingValueInColumn(String columnName, String columnValue){
+    protected int getRowNumberHavingValueInColumn(String columnName, String columnValue){
         List<String> allCellsInColumn = getAllCellsInColumn(columnName);
         int rowNumber = allCellsInColumn.indexOf(columnValue);
         if (rowNumber<0 || rowNumber!=allCellsInColumn.lastIndexOf(columnValue)){

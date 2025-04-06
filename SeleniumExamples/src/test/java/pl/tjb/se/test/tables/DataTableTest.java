@@ -51,23 +51,23 @@ public class DataTableTest extends BaseTest{
         assertThat(firstRow, hasEntry("Last name", "Clifford"));
     }
 
-    //    @Test
-//    public void userShouldBeAbleToHideColumn(){
-//        dataTable.hideColumn("Age");
-//        List<String> headers = dataTable.getColumnNames();
-//        assertThat(headers, not(hasItem("Age")));
-//        assertThat(headers, hasSize(4));
-//    }
-//
-//    @Test
-//    public void userShouldBeAbleToSelectMultipleRows(){
-//        dataTable.selectRows(List.of(1,2,3));
-//        assertThat(dataTable.getRowsSelectedInfo(), equalTo("3 rows selected"));
-//    }
-//
-//    @Test
-//    public void userShouldBeAbleToSelectRowWithCriteria(){
-//        dataTable.selectRow("Full name", "Jaime Lannister");
-//        assertThat(dataTable.getRowsSelectedInfo(), equalTo("1 row selected"));
-//    }
+    @Test
+    public void userShouldBeAbleToHideColumn() {
+        dataTable.hideColumn("Age");
+        List<String> headers = dataTable.getColumnNames();
+        assertThat(headers, not(hasItem("Age")));
+        assertThat(headers, hasSize(4));
+    }
+
+    @Test
+    public void userShouldBeAbleToSelectMultipleRows() {
+        dataTable.selectRows(List.of(1, 2, 3));
+        assertThat(dataTable.getRowsSelectedInfo(), equalTo("3 rows selected"));
+    }
+
+    @Test
+    public void userShouldBeAbleToSelectRowWithCriteria() {
+        dataTable.selectRow("Full name", "Jaime Lannister");
+        assertThat(dataTable.getRowsSelectedInfo(), equalTo("1 row selected"));
+    }
 }

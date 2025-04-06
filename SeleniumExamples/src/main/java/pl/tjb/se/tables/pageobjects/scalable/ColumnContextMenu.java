@@ -15,6 +15,7 @@ public class ColumnContextMenu extends BasePage {
     private final static By ROOT_ELEMENT_BY = By.xpath(ROOT_ELEMENT_XPATH);
     private final static By ASC_BUTTON_RELATIVE_BY = By.xpath(".//li[@data-value='asc']");
     private final static By DESC_BUTTON_RELATIVE_BY = By.xpath(".//li[@data-value='desc']");
+    private final static By HIDE_BUTTON_RELATIVE_BY = By.xpath(".//li//span[contains(text(), 'Hide')]/../..");
 
     @FindBy(xpath = ROOT_ELEMENT_XPATH)
     private WebElement rootElement;
@@ -30,6 +31,11 @@ public class ColumnContextMenu extends BasePage {
 
     public void sortDescending(){
         rootElement.findElement(DESC_BUTTON_RELATIVE_BY).click();
+        waitForContextMenuToDisappear();
+    }
+
+    public void hideColumn() {
+        rootElement.findElement(HIDE_BUTTON_RELATIVE_BY).click();
         waitForContextMenuToDisappear();
     }
 

@@ -7,8 +7,9 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.util.List;
 
-public class DataTable extends AbstractTable{
+public class DataTable extends AbstractTable {
     private static final String OPEN_CONTEXT_MENU_RELATIVE_XPATH = ".//button[@aria-haspopup='menu']";
+    private static final String ROW_SELECTION_SUMMARY_RELATIVE_XPATH =".//div[contains(@class, 'selectedRowCount')]";
 
     public DataTable(WebDriver driver, By tableLocator) {
         super(driver, tableLocator);
@@ -32,11 +33,16 @@ public class DataTable extends AbstractTable{
 
     public void sortBy(String columnName, boolean isAscending) {
         ColumnContextMenu contextMenu = openContextMenuInColumn(columnName);
-        if(isAscending){
+        if (isAscending) {
             contextMenu.sortAscending();
-        }else {
+        } else {
             contextMenu.sortDescending();
         }
+    }
+
+    public void hideColumn(String columnName) {
+        ColumnContextMenu contextMenu = openContextMenuInColumn(columnName);
+        contextMenu.hideColumn();
     }
 
     private ColumnContextMenu openContextMenuInColumn(String columnName) {
@@ -46,8 +52,23 @@ public class DataTable extends AbstractTable{
         return new ColumnContextMenu(driver);
     }
 
-    private WebElement getHeaderField(String columnName){
+    private WebElement getHeaderField(String columnName) {
         int columnIndex = getColumnIndex(columnName);
         return getHeaders().get(columnIndex).findElement(By.xpath("./../../.."));
+    }
+
+    public void selectRows(List<Integer> rowIndexes) {
+        for (Integer indexToBeSelected:rowIndexes){
+            getRows().get(indexToBeSelected).findElement(By.xpath(".//input")).click();
+        }
+    }
+
+    public void selectRow(String columnName, String columnValue) {
+        int rowIndex = getRowNumberHavingValueInColumn(columnName, columnValue);
+        selectRows(List.of(rowIndex));
+    }
+
+    public String getRowsSelectedInfo() {
+        return getRootElement().findElement(By.xpath(ROW_SELECTION_SUMMARY_RELATIVE_XPATH)).getText();
     }
 }
