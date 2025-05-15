@@ -24,4 +24,5 @@ public class BasicTableWrongTest extends BaseTest{
     public void eclairCaloriesShouldBe262(){
         assertEquals(reactTablesPage.getEclairCaloriesFromBasicTable(), "262");
     }
+
 }
