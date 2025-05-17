@@ -1,5 +1,6 @@
 package test;
 
+import dao.MyAddressDAO;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import pageobjects.TopNavigationBar;
@@ -29,11 +30,13 @@ public class AddressTest extends BaseTest {
 
     @Test
     public void userIsAbleToAddAddress() {
+        MyAddressDAO myAddressDAO = new MyAddressDAO("John", "Smith", "", "WallStreet 1/2", "",
+                "New York", "New York", "11111", "12345678", "", "",
+                ORIGINAL_ADDRESS);
+
         List<String> displayedAddresses = new TopNavigationBar(driver).openUserAccountDetails()
                 .openMyAddresses().openNewAddressAddition()
-                .addNewAddress("John", "Smith", "", "WallStreet 1/2", "",
-                        "New York", "New York", "11111", "12345678", "", "",
-                        ORIGINAL_ADDRESS)
+                .addNewAddress(myAddressDAO)
                 .getAllDisplayedAddresses();
         shouldDeleteAddress = true;
         assertEquals(displayedAddresses, List.of(ORIGINAL_ADDRESS));

@@ -1,5 +1,6 @@
 package pageobjects;
 
+import dao.MyAddressDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -77,6 +78,23 @@ public class AddressAdditionPage extends BasePage{
         enterTextIfNotEmpty(mobilePhoneInput, mobilePhone);
         enterTextIfNotEmpty(additionalInfoInput, additionalInfo);
         enterTextIfNotEmpty(addressAliasNameInput, addressAliasName);
+        saveButton.click();
+        return new MyAddressesPage(driver);
+    }
+
+    public MyAddressesPage addNewAddress(MyAddressDAO myAddres){
+        enterTextIfNotEmpty(firstNameInput, myAddres.getFirstName());
+        enterTextIfNotEmpty(lastNameInput, myAddres.getLastName());
+        enterTextIfNotEmpty(companyInput, myAddres.getCompany());
+        enterTextIfNotEmpty(addressLineInput, myAddres.getAddressLine());
+        enterTextIfNotEmpty(addressLine2Input, myAddres.getAddressLine2());
+        enterTextIfNotEmpty(cityInput, myAddres.getCity());
+        selectStateIfNotEmpty(myAddres.getState());
+        enterTextIfNotEmpty(zipPostalCodeInput, myAddres.getZipPostalCode());
+        enterTextIfNotEmpty(homePhoneInput, myAddres.getHomePhone());
+        enterTextIfNotEmpty(mobilePhoneInput, myAddres.getMobilePhone());
+        enterTextIfNotEmpty(additionalInfoInput, myAddres.getAdditionalInfo());
+        enterTextIfNotEmpty(addressAliasNameInput, myAddres.getAddressAliasName());
         saveButton.click();
         return new MyAddressesPage(driver);
     }
