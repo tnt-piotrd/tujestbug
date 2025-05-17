@@ -30,17 +30,18 @@ public class AddressTest extends BaseTest {
 
     @Test
     public void userIsAbleToAddAddress() {
-        MyAddressDAO myAddressDAO = new MyAddressDAO.Builder()
-                .setFirstName("John")
-                .setLastName("Smith")
-                .setAddressLine("WallStreet 1/2")
-                .setAddressLine2("Manhattan")
-                .setCity("New York")
-                .setState("New York")
-                .setZipPostalCode("11111")
-                .setHomePhone("12345678")
-                .setAddressAliasName(ORIGINAL_ADDRESS)
+        MyAddressDAO myAddressDAO = MyAddressDAO.builder()
+                .firstName("John")
+                .lastName("Smith")
+                .addressLine("WallStreet 1/2")
+                .addressLine2("Manhattan")
+                .city("New York")
+                .state("New York")
+                .zipPostalCode("11111")
+                .homePhone("12345678")
+                .addressAliasName(ORIGINAL_ADDRESS)
                 .build();
+
 
         List<String> displayedAddresses = new TopNavigationBar(driver).openUserAccountDetails()
                 .openMyAddresses().openNewAddressAddition()
