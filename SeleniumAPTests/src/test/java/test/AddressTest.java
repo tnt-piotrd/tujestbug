@@ -42,7 +42,6 @@ public class AddressTest extends BaseTest {
                 .addressAliasName(ORIGINAL_ADDRESS)
                 .build();
 
-
         List<String> displayedAddresses = new TopNavigationBar(driver).openUserAccountDetails()
                 .openMyAddresses().openNewAddressAddition()
                 .addNewAddress(myAddressDAO)

@@ -9,6 +9,8 @@ public class LoginPage {
     private final By passwordInputBy = By.id("passwd");
     private final By signInButtonBy = By.id("SubmitLogin");
     private final By errorTextBy = By.xpath("//div[@id='center_column']/div[@class='alert alert-danger']");
+    private final By createAccountEmailInputBy = By.id("email_create");
+    private final By createAccountButtonBy = By.id("SubmitCreate");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
@@ -30,5 +32,11 @@ public class LoginPage {
 
     public String getErrorMessage() {
         return driver.findElement(errorTextBy).getText();
+    }
+
+    public CreateAccountPage openCreationAccountPage(String email){
+        driver.findElement(createAccountEmailInputBy).sendKeys(email);
+        driver.findElement(createAccountButtonBy).click();
+        return new CreateAccountPage(driver);
     }
 }
