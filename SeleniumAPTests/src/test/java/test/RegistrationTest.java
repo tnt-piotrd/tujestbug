@@ -1,5 +1,6 @@
 package test;
 
+import dao.CreateAccountDAO;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterMethod;
@@ -14,7 +15,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class RegistrationTest {
-
+    private static final String INVALID_EMAIL_ADDRESS = "tjb1@info.com";
     protected WebDriver driver;
 
     @BeforeMethod(alwaysRun = true)
@@ -30,30 +31,63 @@ public class RegistrationTest {
 
     @Test
     public void invalidPasswordTest() {
+        CreateAccountDAO createAccountDAO = CreateAccountDAO.builder()
+                .isMr(true)
+                .firstName("John")
+                .lastName("Doe")
+                .email(INVALID_EMAIL_ADDRESS)
+                .password("1234")
+                .dateOfBirthDays("1")
+                .dateOfBirthMonths("10")
+                .dateOfBirthYears("2000")
+                .isNewsletter(false)
+                .build();
+
         List<String> errorMessages = new TopNavigationBar(driver).openLoginPage()
-                .openCreationAccountPage("tjb1@info.com")
-                .registerUnsuccessfully(true, "John", "Doe", "tjb1@info.com", "1234",
-                "1", "10", "2000", false)
+                .openCreationAccountPage(INVALID_EMAIL_ADDRESS)
+                .registerUnsuccessfully(createAccountDAO)
                 .getErrorMessages();
         assertThat(errorMessages, hasItem("passwd is invalid."));
     }
 
     @Test
     public void notEnoughDataTest() {
+        CreateAccountDAO createAccountDAO = CreateAccountDAO.builder()
+                .isMr(null)
+                .firstName("")
+                .lastName("")
+                .email(INVALID_EMAIL_ADDRESS)
+                .password("1234678")
+                .dateOfBirthDays("10")
+                .dateOfBirthMonths("1")
+                .dateOfBirthYears("1984")
+                .isNewsletter(true)
+                .build();
+
         List<String> errorMessages = new TopNavigationBar(driver).openLoginPage()
-                .openCreationAccountPage("tjb1@info.com")
-                .registerUnsuccessfully(null, "", "", "tjb1@info.com", "1234678",
-                        "10", "1", "1984", true)
+                .openCreationAccountPage(INVALID_EMAIL_ADDRESS)
+                .registerUnsuccessfully(createAccountDAO)
                 .getErrorMessages();
         assertThat(errorMessages, hasItems("lastname is required.", "firstname is required."));
     }
 
     @Test
     public void invalidNameTest(){
+        CreateAccountDAO createAccountDAO = CreateAccountDAO.builder()
+                .isMr(false)
+                .firstName("Eve123")
+                .lastName("Smith")
+                .email(INVALID_EMAIL_ADDRESS)
+                .password("1234678")
+                .dateOfBirthDays("10")
+                .dateOfBirthMonths("1")
+                .dateOfBirthYears("1950")
+                .isNewsletter(null)
+                .build();
+
         List<String> errorMessages = new TopNavigationBar(driver).openLoginPage()
-                .openCreationAccountPage("tjb1@info.com")
-                .registerUnsuccessfully(false, "Eve123", "Smith", "tjb1@info.com", "1234678",
-                        "10", "1", "1950", null)
+                .openCreationAccountPage(INVALID_EMAIL_ADDRESS)
+                .registerUnsuccessfully(createAccountDAO)
                 .getErrorMessages();
         assertThat(errorMessages, hasItem("firstname is invalid."));
     }

@@ -1,5 +1,6 @@
 package pageobjects;
 
+import dao.CreateAccountDAO;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -62,15 +63,14 @@ public class CreateAccountPage extends BasePage{
                 .until(ExpectedConditions.elementToBeClickable(By.xpath(REGISTER_ACCOUNT_BUTTON_XPATH)));
     }
 
-    public CreateAccountPage registerUnsuccessfully(Boolean isMr, String firstName, String lastName, String email, String password,
-                                       String day, String month, String year, Boolean isNewsletter) {
-        selectRadioButtonIfNotEmpty(mrRadioButton, mrsRadioButton, isMr);
-        enterTextIfNotEmpty(firstNameInput, firstName);
-        enterTextIfNotEmpty(lastNameInput, lastName);
-        enterTextIfNotEmpty(emailInput, email);
-        enterTextIfNotEmpty(passwordInput, password);
-        selectDateOfBirth(day, month, year);
-        selectCheckboxIfNotEmpty(newsletterCheckbox, isNewsletter);
+    public CreateAccountPage registerUnsuccessfully(CreateAccountDAO createAccountDAO) {
+        selectRadioButtonIfNotEmpty(mrRadioButton, mrsRadioButton, createAccountDAO.getIsMr());
+        enterTextIfNotEmpty(firstNameInput, createAccountDAO.getFirstName());
+        enterTextIfNotEmpty(lastNameInput, createAccountDAO.getLastName());
+        enterTextIfNotEmpty(emailInput, createAccountDAO.getEmail());
+        enterTextIfNotEmpty(passwordInput, createAccountDAO.getPassword());
+        selectDateOfBirth(createAccountDAO.getDateOfBirthDays(), createAccountDAO.getDateOfBirthMonths(), createAccountDAO.getDateOfBirthYears());
+        selectCheckboxIfNotEmpty(newsletterCheckbox, createAccountDAO.getIsNewsletter());
         registerAccountButton.click();
         new WebDriverWait(driver, _30_SECONDS.getDuration())
                 .until(ExpectedConditions.visibilityOfAllElements(errorMessagesLabels));
