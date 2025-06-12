@@ -18,6 +18,9 @@ public class MyAccountPage extends BasePage {
     @FindBy(xpath = "//a[@title='Information']")
     private WebElement personalInformationButton;
 
+    @FindBy(xpath = "//a[@title='Addresses']")
+    private WebElement myAddressesButton;
+
     public MyAccountPage(WebDriver driver) {
         super(driver);
     }
@@ -30,6 +33,11 @@ public class MyAccountPage extends BasePage {
     public MyPersonalInformationPage openMyPersonalInformation() {
         personalInformationButton.click();
         return new MyPersonalInformationPage(driver);
+    }
+
+    public MyAddressesPage openMyAddresses() {
+        myAddressesButton.click();
+        return new MyAddressesPage(driver);
     }
 
 }
