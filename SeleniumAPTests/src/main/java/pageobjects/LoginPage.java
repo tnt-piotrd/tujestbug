@@ -2,6 +2,10 @@ package pageobjects;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class LoginPage {
     private final WebDriver driver;
@@ -20,6 +24,8 @@ public class LoginPage {
         driver.findElement(emailInputBy).sendKeys(email);
         driver.findElement(passwordInputBy).sendKeys(password);
         driver.findElement(signInButtonBy).click();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(errorTextBy));
         return this;
     }
 

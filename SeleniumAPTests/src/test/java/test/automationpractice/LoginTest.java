@@ -33,7 +33,7 @@ public class LoginTest {
 
     @Test(dataProvider = "invalid-credentials")
     public void unsuccessfulLoginTest(String email, String password, String errorMessage) {
-        loginPage.unsuccessfulLogin(email, password);
+        loginPage = loginPage.unsuccessfulLogin(email, password);
         Assert.assertTrue(loginPage.getErrorMessage().contains(errorMessage),
                 String.format("Expected '%s' message to contain '%s'", loginPage.getErrorMessage(), errorMessage));
     }
