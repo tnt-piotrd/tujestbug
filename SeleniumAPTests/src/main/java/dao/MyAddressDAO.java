@@ -2,9 +2,11 @@ package dao;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Builder
 @Getter
+@ToString
 public class MyAddressDAO {
     private String firstName;
     private String lastName;

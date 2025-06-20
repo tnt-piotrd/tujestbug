@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import other.LoggerSingleton;
 
 import static utils.TimeOuts._30_SECONDS;
 
@@ -36,6 +37,7 @@ public class MyAccountPage extends BasePage {
     }
 
     public MyAddressesPage openMyAddresses() {
+        LoggerSingleton.getInstance().log("Opening My Addresses page");
         myAddressesButton.click();
         return new MyAddressesPage(driver);
     }

@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import other.LoggerSingleton;
 
 import static utils.TimeOuts._30_SECONDS;
 
@@ -55,6 +56,7 @@ public class TopNavigationBar extends BasePage {
     }
 
     public MyAccountPage openUserAccountDetails() {
+        LoggerSingleton.getInstance().log("Opening user account details");
         userDetailsButton.click();
         return new MyAccountPage(driver);
     }
