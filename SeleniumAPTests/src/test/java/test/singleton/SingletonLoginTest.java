@@ -1,4 +1,4 @@
-package test.other;
+package test.singleton;
 
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -6,7 +6,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageobjects.LoginPage;
 import pageobjects.TopNavigationBar;
-import test.singleton.BaseSingletonTest;
 import utils.DriverManager;
 
 public class SingletonLoginTest extends BaseSingletonTest {

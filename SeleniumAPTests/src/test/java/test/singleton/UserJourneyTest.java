@@ -1,4 +1,4 @@
-package test.other;
+package test.singleton;
 
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -6,7 +6,6 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pageobjects.TopNavigationBar;
 import test.automationpractice.BaseTest;
-import test.singleton.BaseSingletonTest;
 import utils.DriverManager;
 
 import static org.testng.Assert.assertTrue;
