@@ -1,4 +1,4 @@
-package test;
+package test.automationpractice;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

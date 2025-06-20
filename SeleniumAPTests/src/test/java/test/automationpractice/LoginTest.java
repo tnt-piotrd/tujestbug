@@ -1,4 +1,4 @@
-package test;
+package test.automationpractice;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 import pageobjects.LoginPage;
 import pageobjects.TopNavigationBar;
 
-import static test.BaseTest.*;
+import static test.automationpractice.BaseTest.*;
 
 public class LoginTest {
     private WebDriver driver;

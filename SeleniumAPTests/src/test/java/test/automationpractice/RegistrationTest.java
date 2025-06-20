@@ -1,4 +1,4 @@
-package test;
+package test.automationpractice;
 
 import dao.CreateAccountDAO;
 import org.openqa.selenium.WebDriver;

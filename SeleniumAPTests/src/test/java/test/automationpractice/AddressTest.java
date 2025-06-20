@@ -1,4 +1,4 @@
-package test;
+package test.automationpractice;
 
 import dao.MyAddressDAO;
 import org.testng.annotations.AfterMethod;
