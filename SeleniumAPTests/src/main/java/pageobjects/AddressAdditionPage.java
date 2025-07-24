@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import other.LoggerSingleton;
 
 import static utils.TimeOuts._30_SECONDS;
 
@@ -83,6 +84,7 @@ public class AddressAdditionPage extends BasePage{
     }
 
     public MyAddressesPage addNewAddress(MyAddressDAO myAddres){
+        LoggerSingleton.getInstance().log("Adding new address: " + myAddres);
         enterTextIfNotEmpty(firstNameInput, myAddres.getFirstName());
         enterTextIfNotEmpty(lastNameInput, myAddres.getLastName());
         enterTextIfNotEmpty(companyInput, myAddres.getCompany());
@@ -101,6 +103,7 @@ public class AddressAdditionPage extends BasePage{
 
     private void enterTextIfNotEmpty(WebElement element, String text) {
         if (text != null && !text.isEmpty()) {
+            LoggerSingleton.getInstance().log("Entering text: '%s'".formatted(text));
             element.clear();
             element.sendKeys(text);
         }
@@ -110,6 +113,7 @@ public class AddressAdditionPage extends BasePage{
         if (state == null || state.isEmpty()) {
             return;
         }else {
+            LoggerSingleton.getInstance().log("Selecting state: '%s'".formatted(state));
             Select select = new Select(stateSelect);
             select.selectByVisibleText(state);
         }
