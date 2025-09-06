@@ -1,4 +1,4 @@
-package other;
+package other.singleton;
 
 public class SimpleSingleton {
     private static SimpleSingleton instance;

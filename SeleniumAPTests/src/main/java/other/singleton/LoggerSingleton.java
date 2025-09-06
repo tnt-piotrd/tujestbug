@@ -1,4 +1,4 @@
-package other;
+package other.singleton;
 
 import utils.Logger;
 import utils.SimpleLogger;
