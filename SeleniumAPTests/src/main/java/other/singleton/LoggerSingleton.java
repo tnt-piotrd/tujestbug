@@ -1,5 +1,6 @@
 package other.singleton;
 
+import utils.logger.ClassNameLogger;
 import utils.logger.Logger;
 import utils.logger.ConsoleLogger;
 import utils.logger.TimeStampLogger;
@@ -9,7 +10,7 @@ public class LoggerSingleton {
     private final Logger logger;
 
     private LoggerSingleton() {
-        this.logger = new TimeStampLogger(new ConsoleLogger());
+        this.logger = new ClassNameLogger(new TimeStampLogger(new ConsoleLogger()));
     }
 
     public static LoggerSingleton getInstance() {
