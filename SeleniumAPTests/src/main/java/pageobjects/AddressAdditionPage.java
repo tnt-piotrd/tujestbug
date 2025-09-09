@@ -98,6 +98,7 @@ public class AddressAdditionPage extends BasePage{
         enterTextIfNotEmpty(additionalInfoInput, myAddres.getAdditionalInfo());
         enterTextIfNotEmpty(addressAliasNameInput, myAddres.getAddressAliasName());
         saveButton.click();
+        LoggerSingleton.getInstance().log("New address added successfully");
         return new MyAddressesPage(driver);
     }
 
@@ -107,6 +108,7 @@ public class AddressAdditionPage extends BasePage{
             element.clear();
             element.sendKeys(text);
         }
+        LoggerSingleton.getInstance().log("WARNING: Skipping empty text input for element: '%s'".formatted(element.getAttribute("id")));
     }
 
     private void selectStateIfNotEmpty(String state) {

@@ -1,16 +1,13 @@
 package other.singleton;
 
-import utils.logger.ClassNameLogger;
-import utils.logger.Logger;
-import utils.logger.ConsoleLogger;
-import utils.logger.TimeStampLogger;
+import utils.logger.*;
 
 public class LoggerSingleton {
     private static volatile LoggerSingleton instance;
     private final Logger logger;
 
     private LoggerSingleton() {
-        this.logger = new ClassNameLogger(new TimeStampLogger(new ConsoleLogger()));
+        this.logger = new ClassNameLogger(new TimeStampLogger(new LevelBasedColorLogger(new ConsoleLogger())));
     }
 
     public static LoggerSingleton getInstance() {

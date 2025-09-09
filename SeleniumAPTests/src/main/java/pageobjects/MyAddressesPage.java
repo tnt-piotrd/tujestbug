@@ -61,11 +61,13 @@ public class MyAddressesPage extends BasePage{
     }
 
     private WebElement findMatchingAddress(String addressAliasName){
+        LoggerSingleton.getInstance().log("Searching for address with name: " + addressAliasName);
         for (WebElement displayedAddress : addressesList) {
             if (displayedAddress.getText().equals(addressAliasName)) {
                 return displayedAddress;
             }
         }
+        LoggerSingleton.getInstance().log("ERROR Unable to find address with name: " + addressAliasName);
         throw new RuntimeException("Unable to find address with name: " + addressAliasName);
     }
 }
