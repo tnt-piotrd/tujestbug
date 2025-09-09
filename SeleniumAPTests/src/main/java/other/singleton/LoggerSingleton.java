@@ -1,14 +1,15 @@
 package other.singleton;
 
-import utils.Logger;
-import utils.SimpleLogger;
+import utils.logger.Logger;
+import utils.logger.ConsoleLogger;
+import utils.logger.TimeStampLogger;
 
 public class LoggerSingleton {
     private static volatile LoggerSingleton instance;
     private final Logger logger;
 
     private LoggerSingleton() {
-        this.logger = new SimpleLogger();
+        this.logger = new TimeStampLogger(new ConsoleLogger());
     }
 
     public static LoggerSingleton getInstance() {
