@@ -7,7 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import other.LoggerSingleton;
+import other.singleton.LoggerSingleton;
 
 import java.util.List;
 
@@ -61,11 +61,13 @@ public class MyAddressesPage extends BasePage{
     }
 
     private WebElement findMatchingAddress(String addressAliasName){
+        LoggerSingleton.getInstance().log("Searching for address with name: " + addressAliasName);
         for (WebElement displayedAddress : addressesList) {
             if (displayedAddress.getText().equals(addressAliasName)) {
                 return displayedAddress;
             }
         }
+        LoggerSingleton.getInstance().log("ERROR Unable to find address with name: " + addressAliasName);
         throw new RuntimeException("Unable to find address with name: " + addressAliasName);
     }
 }

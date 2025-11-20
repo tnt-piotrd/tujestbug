@@ -8,7 +8,7 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import other.LoggerSingleton;
+import other.singleton.LoggerSingleton;
 
 import static utils.TimeOuts._30_SECONDS;
 
@@ -98,6 +98,7 @@ public class AddressAdditionPage extends BasePage{
         enterTextIfNotEmpty(additionalInfoInput, myAddres.getAdditionalInfo());
         enterTextIfNotEmpty(addressAliasNameInput, myAddres.getAddressAliasName());
         saveButton.click();
+        LoggerSingleton.getInstance().log("New address added successfully");
         return new MyAddressesPage(driver);
     }
 
@@ -107,6 +108,7 @@ public class AddressAdditionPage extends BasePage{
             element.clear();
             element.sendKeys(text);
         }
+        LoggerSingleton.getInstance().log("WARNING: Skipping empty text input for element: '%s'".formatted(element.getAttribute("id")));
     }
 
     private void selectStateIfNotEmpty(String state) {

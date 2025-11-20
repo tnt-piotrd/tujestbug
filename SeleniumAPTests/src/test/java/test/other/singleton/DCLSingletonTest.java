@@ -1,8 +1,8 @@
-package test.other;
+package test.other.singleton;
 
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import other.DCLSingleton;
+import other.singleton.DCLSingleton;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;

@@ -1,7 +1,7 @@
-package test.other;
+package test.other.singleton;
 
 import org.testng.annotations.Test;
-import other.SimpleSingleton;
+import other.singleton.SimpleSingleton;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;

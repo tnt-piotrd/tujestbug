@@ -1,4 +1,4 @@
-package other;
+package other.singleton;
 
 public class DCLSingleton {
     private static volatile DCLSingleton instance;
