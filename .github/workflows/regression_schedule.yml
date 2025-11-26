@@ -20,8 +20,11 @@ jobs:
       run: mvn test
       continue-on-error: true
     - name: Archive test results
-      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-report
-        path: RestAssuredTests/target/surefire-reports
+        path: ./RestAssuredTests/target/surefire-reports
+
+    - name: Fail job if tests failed
+      if: steps.tests.outcome == 'failure'
+      run: exit 1
