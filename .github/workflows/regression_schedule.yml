@@ -16,15 +16,23 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Run regression tests
+      id: tests
       working-directory: ./RestAssuredTests
       run: mvn test
       continue-on-error: true
+    - name: Debug – list files
+      if: always()
+      run: |
+        pwd
+        ls -R
+        ls -R RestAssuredTests || echo "No RestAssuredTests dir"
     - name: Archive test results
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: test-report
-        path: ./RestAssuredTests/target/surefire-reports
-
+        path: RestAssuredTests/target/surefire-reports/**
+        if-no-files-found: warn
     - name: Fail job if tests failed
       if: steps.tests.outcome == 'failure'
       run: exit 1
