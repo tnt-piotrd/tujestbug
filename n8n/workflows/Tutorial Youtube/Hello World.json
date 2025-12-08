@@ -1,0 +1,106 @@
+{
+  "name": "Hello World",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2345abc4-2a38-45b1-b114-c66398ecc79e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://randomuser.me/api/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9d8cc363-02d6-4a51-87b6-cd14785b638f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "185a1905-57cc-4e12-a8d9-a670f95f6bcd",
+              "name": "firstName",
+              "value": "={{ $json.results[0].name.first }}",
+              "type": "string"
+            },
+            {
+              "id": "b24aefd9-7c47-4b6e-8b9a-238cf4ade6e3",
+              "name": "lastName",
+              "value": "={{ $json.results[0].name.last }}",
+              "type": "string"
+            },
+            {
+              "id": "c6859069-665b-45a9-846f-48c214056061",
+              "name": "gender",
+              "value": "={{ $json.results[0].gender }}",
+              "type": "string"
+            },
+            {
+              "id": "7cda44a3-ce40-4ab5-9f35-acb93da0a2d4",
+              "name": "country",
+              "value": "={{ $json.results[0].location.country }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "14b7dc06-24b9-479b-827f-bce93aee5dda",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "84b46d52-2490-45e4-854b-ced9044cc1dd",
+  "meta": {
+    "instanceId": "77d12cdcd57d25792b388dcab050a68c1757ae0e7608adde901624b4434dc350"
+  },
+  "id": "GFks2s9PeUQYWj1r",
+  "tags": []
+}
