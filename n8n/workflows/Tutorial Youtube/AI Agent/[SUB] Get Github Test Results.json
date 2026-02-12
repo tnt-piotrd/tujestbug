@@ -1,0 +1,467 @@
+{
+  "name": "[SUB] Get Github Test Results",
+  "nodes": [
+    {
+      "parameters": {
+        "resource": "workflow",
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "piotrn8n",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "tujestbug-copy",
+          "mode": "list",
+          "cachedResultName": "tujestbug-copy",
+          "cachedResultUrl": "https://github.com/piotrn8n/tujestbug-copy"
+        },
+        "workflowId": {
+          "__rl": true,
+          "value": 218531800,
+          "mode": "list",
+          "cachedResultName": "RestAssuredTests - Single Test Suite"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "5a077a9d-fa70-48b5-947c-2de9405912af",
+      "name": "Get a workflow",
+      "webhookId": "28936c0f-4eb5-4a77-964a-10f442e4a47d",
+      "credentials": {
+        "githubApi": {
+          "id": "CKbQmcvJNpNWJRar",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}/runs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "9b9ed9ab-65d6-4853-aed5-d77334c9f5e7",
+      "name": "Get workflow runs"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "workflow_runs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "516a9015-6bc0-481c-aaa1-068e523eadca",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8de1c626-1d51-4790-8dc3-1cc920833407",
+              "leftValue": "={{ $json.created_at.substring(0,10) }}",
+              "rightValue": "={{ $('When Executed by Another Workflow').item.json.date }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "2112f96e-a486-4ddf-b85c-cbd37f9f2eda",
+      "name": "Filter",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// znajdź item z najwyższym run_number\nconst latestItem = items.reduce((max, current) => {\n  return current.json.run_number > max.json.run_number ? current : max;\n});\n\n// zwracamy tylko jeden item (najnowszy run)\nreturn [latestItem];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1328,
+        -16
+      ],
+      "id": "6fe1c42b-1526-428d-a01c-23c2967bd64c",
+      "name": "Get latest workflow run"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}/artifacts",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1504,
+        -16
+      ],
+      "id": "a22ed10f-ec8b-4057-9c1e-6c3467999e65",
+      "name": "Get Artifacts"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.artifacts[0].archive_download_url }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <<ADD YOUR GITHUB TOKEN HERE>>"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1680,
+        -16
+      ],
+      "id": "e9b73c9b-35e3-4ca6-9682-46001d9b5ad7",
+      "name": "Download zip archive"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.compression",
+      "typeVersion": 1.1,
+      "position": [
+        1840,
+        -16
+      ],
+      "id": "45158b32-1d78-4a33-96a6-2d6a5ce52c46",
+      "name": "Compression"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nfor (const item of items) {\n  if (!item.binary) continue;\n\n  for (const binaryKey of Object.keys(item.binary)) {\n    const binary = item.binary[binaryKey];\n\n    if (binary.fileName === 'testng-results.xml') {\n      return [\n        {\n          json: {},\n          binary: {\n            'testng-results': {\n              ...binary,\n              fileName: 'testng-results.xml',\n            },\n          },\n        },\n      ];\n    }\n  }\n}\n\n// jeśli pliku nie znaleziono\nreturn [];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        -16
+      ],
+      "id": "f6460343-828c-46cd-8364-d12c6f3d3fa4",
+      "name": "Find testng-results file"
+    },
+    {
+      "parameters": {
+        "operation": "xml",
+        "binaryPropertyName": "testng-results",
+        "destinationKey": "xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2256,
+        -16
+      ],
+      "id": "46257651-b7ee-4eb3-84ad-481df2255671",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        -16
+      ],
+      "id": "dbca84f6-6084-48e3-b823-30a084a3fee9",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Helpers =====\nconst asArray = (val) => {\n  if (val == null) return [];\n  return Array.isArray(val) ? val : [val];\n};\n\nconst cleanMessage = (msg) => {\n  if (!msg) return null;\n  return msg\n    .replace(/\\s+/g, ' ')\n    .trim();\n};\n\n// ===== Input =====\nconst input = $input.first().json;\n\nconst classes = asArray(\n  input?.[\"testng-results\"]?.suite?.test?.class\n);\n\n// ===== Collect tests =====\nconst tests = [];\n\nfor (const cls of classes) {\n  const className = cls?.name ?? null;\n  const methods = asArray(cls?.[\"test-method\"]);\n\n  for (const m of methods) {\n    // 👉 pomijamy setup/teardown itp.\n    if (m?.[\"is-config\"] === \"true\") continue;\n\n    const status = m?.status ?? null;\n\n    tests.push({\n      name: m?.name ?? null,\n      status,\n      className,\n      errorMessage:\n        status === \"FAIL\"\n          ? cleanMessage(m?.exception?.message)\n          : null,\n    });\n  }\n}\n\n// ===== Summary =====\nconst summary = {\n  passed: 0,\n  failed: 0,\n  skipped: 0,\n  total: tests.length,\n};\n\nfor (const t of tests) {\n  const status = (t.status || \"\").toUpperCase();\n  if (status === \"PASS\") summary.passed += 1;\n  else if (status === \"FAIL\") summary.failed += 1;\n  else if (status === \"SKIP\") summary.skipped += 1;\n}\n\n// ===== Output =====\nreturn [\n  {\n    json: {\n      summary,\n      tests,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2672,
+        -16
+      ],
+      "id": "1d0e61dd-b7f2-4b1f-8356-a98f7289e454",
+      "name": "Generate summary"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "date"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c948462b-3b9c-4a41-979f-a026c86b075d",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "97012280-304a-4449-bea8-4a9e1cf3bf43",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "bbb",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        0
+      ],
+      "id": "2f650920-13d2-407b-8af1-03ba3a480047",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "const date = $('When Executed by Another Workflow').first().json.date;\nreturn {\n  \"data\":\"No test results found on date \"+date\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        176
+      ],
+      "id": "2e11377a-63fd-4148-9503-3905965a307d",
+      "name": "No tests were found"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "date": "2025-12-30"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Get a workflow": {
+      "main": [
+        [
+          {
+            "node": "Get workflow runs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get workflow runs": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get latest workflow run": {
+      "main": [
+        [
+          {
+            "node": "Get Artifacts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Artifacts": {
+      "main": [
+        [
+          {
+            "node": "Download zip archive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download zip archive": {
+      "main": [
+        [
+          {
+            "node": "Compression",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compression": {
+      "main": [
+        [
+          {
+            "node": "Find testng-results file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find testng-results file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Generate summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get a workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get latest workflow run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No tests were found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "82090f53-a537-4332-9e68-9a64d9881321",
+  "meta": {
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "7NT7g5FaHEfWpOOO",
+  "tags": []
+}

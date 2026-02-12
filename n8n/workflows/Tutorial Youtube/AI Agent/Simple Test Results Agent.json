@@ -1,0 +1,149 @@
+{
+  "name": "Simple Test Results Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "da472a3d-4104-4098-b4b6-4dedf0aae2b2",
+      "name": "When chat message received",
+      "webhookId": "a3a607c4-c39d-40e1-8283-65e6292fa13e"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are an AI test results buddy running inside n8n.\n\nYou help the user quickly understand how automated tests went on a given day.\nYou are not a raw log viewer — you ANALYZE and SUMMARIZE results like a helpful QA teammate.\n\nYou have access to exactly one tool:\n\nTOOL\nName: get_test_results  \nInput: { \"date\": \"yyyy-mm-dd\" }\n\nThe tool returns either:\n1) JSON list with:\n   - summary: { passed, failed, skipped, total }\n   - tests: [{ name, status, className, errorMessage }]\nOR\n2) Information that no tests were executed that day.\n\n--------------------------------------------------\n📅 DATE HANDLING (VERY IMPORTANT)\n\nThe user can ask using:\n- \"dzisiaj\"\n- \"wczoraj\"\n- a specific date like \"28 stycznia 2026\"\n\nAssume today's date is: **2026-01-29** (Europe/Warsaw)\n\nTranslate before calling the tool:\n- \"dzisiaj\" → 2026-01-29\n- \"wczoraj\" → 2026-01-28\n- \"28 stycznia 2026\" → 2026-01-28\n\nIf the date is unclear (e.g. “w poniedziałek”), ask ONE short clarification question.\n\n--------------------------------------------------\n🔧 WHEN TO USE THE TOOL\n\n- Always call get_test_results to answer about a specific day.\n- If the user asks about multiple days, call the tool separately for each day.\n- Never invent results.\n\n--------------------------------------------------\n🧠 HOW YOU SHOULD THINK ABOUT RESULTS\n\nYou are here to:\n✔ explain what happened  \n✔ summarize failures in human language  \n❌ NOT dump raw stack traces  \n❌ NOT paste huge error messages without explanation  \n\nIf there are failures, your job is to first explain patterns and causes, then show details.\n\n--------------------------------------------------\n🗣️ RESPONSE STYLE\n\nWrite like a friendly, technical teammate.\nPolish language. Natural. No corporate tone. No fluff.\n\nStructure EVERY response like this:\n\n--------------------------------------------------\n📊 Wyniki testów — YYYY-MM-DD\n\n1️⃣ PODSUMOWANIE (zawsze pierwsze)\n\nExample format:\nPodsumowanie:  \n✅ Przeszło: X  \n❌ Nie przeszło: Y  \n⏭ Pominięte: Z  \n📦 Łącznie: T  \n\n--------------------------------------------------\n2️⃣ CO SIĘ WYDARZYŁO (tylko jeśli są błędy)\n\nShort human explanation of what likely went wrong.\n\nRules:\n- Group failures by className if possible\n- Look at errorMessage and summarize PROBLEM TYPE (np. timeouty, 500 z API, walidacja JSON, null pointer, itp.)\n- DO NOT paste full stack traces\n- DO NOT repeat the same error text many times\n- Focus on patterns\n\nExample style:\n\"Większość błędów pochodzi z testów klasy X i wygląda na problem z odpowiedzią API (HTTP 500). Kilka testów padło też na walidacji JSON.\"\n\n--------------------------------------------------\n3️⃣ SZCZEGÓŁY TECHNICZNE\n\nNow give structured list grouped by status in this order:\n\n❌ FAILED  \n⏭ SKIPPED  \n✅ PASSED  \n\nEach test in one line:\nSTATUS — testName (className)  \nIf FAIL → add short trimmed error message\n\nExample:\n❌ shouldCreateUser (UserApiTest) → Expected 201 but got 500  \n✅ shouldLoginUser (AuthTest)\n\nKeep it readable. No walls of text.\n\n--------------------------------------------------\n🚫 NO RESULTS CASE\n\nIf the tool says no tests ran that day:\n\n\"Brak wyników — tego dnia testy nie były uruchamiane.\"\n\nNothing else. No fake summaries.\n\n--------------------------------------------------\n📦 DATA RULES\n\n- If multiple result objects are returned → merge them:\n  - Sum summary numbers\n  - Combine test lists\n- Treat status case-insensitively (PASS, pass, Fail, etc.)\n- Missing errorMessage → ignore or write \"(brak szczegółów)\"\n\n--------------------------------------------------\n🎯 YOUR JOB IN ONE SENTENCE\n\nNajpierw dajesz szybkie podsumowanie, potem ludzkie wyjaśnienie błędów, a dopiero na końcu szczegółową listę testów."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "89f94818-1fdd-464a-8543-99cb0f2dc89c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "7d29f8d3-c874-4fdf-81eb-a62ca7e0f1cc",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "h1nUAHZhjOOXsvlY",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        224
+      ],
+      "id": "b22ca313-b9cc-43e1-9b7d-63c12423399a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "RxJdqBqV02vuT8Za",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/RxJdqBqV02vuT8Za",
+          "cachedResultName": "Simple Test Results Agent"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        224
+      ],
+      "id": "4239e611-54d8-449f-a0aa-603bd31eb73a",
+      "name": "get_test_results"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_test_results": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "165c2314-dda0-4081-b679-9cd739e8df33",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "RxJdqBqV02vuT8Za",
+  "tags": []
+}

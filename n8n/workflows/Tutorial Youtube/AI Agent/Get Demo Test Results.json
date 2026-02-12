@@ -1,0 +1,174 @@
+{
+  "name": "Get Demo Test Results",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "xml",
+        "binaryPropertyName": "testng-results",
+        "destinationKey": "xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        2096,
+        -112
+      ],
+      "id": "95a98ead-513c-4928-b057-304500995fce",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "dataPropertyName": "xml",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        -112
+      ],
+      "id": "0f8490f5-cfc7-4669-b440-a7b4bbb21014",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ===== Helpers =====\nconst asArray = (val) => {\n  if (val == null) return [];\n  return Array.isArray(val) ? val : [val];\n};\n\nconst cleanMessage = (msg) => {\n  if (!msg) return null;\n  return msg\n    .replace(/\\s+/g, ' ')\n    .trim();\n};\n\n// ===== Input =====\nconst input = $input.first().json;\n\nconst classes = asArray(\n  input?.[\"testng-results\"]?.suite?.test?.class\n);\n\n// ===== Collect tests =====\nconst tests = [];\n\nfor (const cls of classes) {\n  const className = cls?.name ?? null;\n  const methods = asArray(cls?.[\"test-method\"]);\n\n  for (const m of methods) {\n    // 👉 pomijamy setup/teardown itp.\n    if (m?.[\"is-config\"] === \"true\") continue;\n\n    const status = m?.status ?? null;\n\n    tests.push({\n      name: m?.name ?? null,\n      status,\n      className,\n      errorMessage:\n        status === \"FAIL\"\n          ? cleanMessage(m?.exception?.message)\n          : null,\n    });\n  }\n}\n\n// ===== Summary =====\nconst summary = {\n  passed: 0,\n  failed: 0,\n  skipped: 0,\n  total: tests.length,\n};\n\nfor (const t of tests) {\n  const status = (t.status || \"\").toUpperCase();\n  if (status === \"PASS\") summary.passed += 1;\n  else if (status === \"FAIL\") summary.failed += 1;\n  else if (status === \"SKIP\") summary.skipped += 1;\n}\n\n// ===== Output =====\nreturn [\n  {\n    json: {\n      summary,\n      tests,\n    },\n  },\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2528,
+        -112
+      ],
+      "id": "6278b5ed-d675-4d37-972f-a4cb44097981",
+      "name": "Generate summary"
+    },
+    {
+      "parameters": {
+        "url": "=https://raw.githubusercontent.com/tnt-piotrd/tujestbug/refs/heads/tjb-27-n8n-ai-agent/n8n/workflows/Tutorial%20Youtube/AI%20Agent/demo_results/{{ $json.date }}.xml",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "testng-results"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1856,
+        0
+      ],
+      "id": "1ae1db93-9e52-48f4-8a24-5237b6b53c19",
+      "name": "Download Test Results",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "date"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        1632,
+        0
+      ],
+      "id": "5b37677f-1eb6-4182-94fd-c88942d7ce24",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "const date = $input.first().json.date;\nreturn{\n  \"data\":\"No test results found on date \"+date\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2064,
+        80
+      ],
+      "id": "41748875-e182-4c5d-bcb9-a8ef6decd2fb",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "date": "2026-01-27"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Generate summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Test Results": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Download Test Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7debae86-c8a7-4fe1-a762-1fed88869176",
+  "meta": {
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "iVOaTTOhuow1vSBl",
+  "tags": []
+}

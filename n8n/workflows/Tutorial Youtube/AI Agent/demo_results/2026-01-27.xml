@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="12" passed="12" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2026-27-01T12:35:56 UTC" name="RestAssured Regression Test Suite" finished-at="2026-27-01T12:35:59 UTC" duration-ms="2424">
+    <groups>
+    </groups>
+    <test started-at="2026-27-01T12:35:56 UTC" name="Parallel Regression Tests" finished-at="2026-27-01T12:35:59 UTC" duration-ms="2424">
+
+      <class name="pl.tnt.tjb.test.spec.RequestSpecTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecTest@6a01e23]"
+                     started-at="2026-27-01T12:35:56 UTC" name="setup"
+                     finished-at="2026-27-01T12:35:57 UTC" duration-ms="475" status="PASS"/>
+        <test-method signature="postmanShouldEchoHeaders()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecTest@6a01e23]"
+                     started-at="2026-27-01T12:35:57 UTC" name="postmanShouldEchoHeaders"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="1633" status="PASS"/>
+        <test-method is-config="true" signature="setup()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecTest@6a01e23]"
+                     started-at="2026-27-01T12:35:58 UTC" name="setup"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="10" status="PASS"/>
+        <test-method signature="postmanShouldEchoTwoHeaders()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecTest@6a01e23]"
+                     started-at="2026-27-01T12:35:58 UTC" name="postmanShouldEchoTwoHeaders"
+                     finished-at="2026-27-01T12:35:59 UTC" duration-ms="196" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.serialization.restapi.ReqRestPojoTest">
+        <test-method signature="shouldBeAbleToMapJsonToPojo()[pri:0, instance:pl.tnt.tjb.test.serialization.restapi.ReqRestPojoTest@6293abcc]"
+                     started-at="2026-27-01T12:35:56 UTC" name="shouldBeAbleToMapJsonToPojo"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="1533" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.serialization.restapi.ComplexPojoTest">
+        <test-method signature="shouldBeAbleToSendAnnotatedPojoAsJson()[pri:0, instance:pl.tnt.tjb.test.serialization.restapi.ComplexPojoTest@5a955565]"
+                     started-at="2026-27-01T12:35:56 UTC" name="shouldBeAbleToSendAnnotatedPojoAsJson"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="2189" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.serialization.java.BookTest">
+        <test-method signature="shouldBeAbleToSerializeBook()[pri:0, instance:pl.tnt.tjb.test.serialization.java.BookTest@4c15e7fd]"
+                     started-at="2026-27-01T12:35:58 UTC" name="shouldBeAbleToSerializeBook"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="8" status="PASS"/>
+        <test-method signature="deserializationShouldBeSuccessful()[pri:0, instance:pl.tnt.tjb.test.serialization.java.BookTest@4c15e7fd]"
+                     started-at="2026-27-01T12:35:58 UTC" name="deserializationShouldBeSuccessful"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="13" status="PASS"/>
+        <test-method is-config="true" signature="deleteFile()[pri:0, instance:pl.tnt.tjb.test.serialization.java.BookTest@4c15e7fd]"
+                     started-at="2026-27-01T12:35:58 UTC" name="deleteFile"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="0" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.spec.RequestSpecBuilderTest">
+        <test-method is-config="true" signature="setup()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecBuilderTest@5c1a8622]"
+                     started-at="2026-27-01T12:35:56 UTC" name="setup"
+                     finished-at="2026-27-01T12:35:57 UTC" duration-ms="471" status="PASS"/>
+        <test-method signature="postmanShouldEchoHeaders()[pri:0, instance:pl.tnt.tjb.test.spec.RequestSpecBuilderTest@5c1a8622]"
+                     started-at="2026-27-01T12:35:57 UTC" name="postmanShouldEchoHeaders"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="1642" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.serialization.restapi.SimplePojoTest">
+        <test-method signature="shouldBeAbleToSendJsonAsFile()[pri:0, instance:pl.tnt.tjb.test.serialization.restapi.SimplePojoTest@7995092a]"
+                     started-at="2026-27-01T12:35:56 UTC" name="shouldBeAbleToSendJsonAsFile"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="2163" status="PASS"/>
+        <test-method signature="shouldBeAbleToSendPojoAsJson()[pri:0, instance:pl.tnt.tjb.test.serialization.restapi.SimplePojoTest@7995092a]"
+                     started-at="2026-27-01T12:35:58 UTC" name="shouldBeAbleToSendPojoAsJson"
+                     finished-at="2026-27-01T12:35:59 UTC" duration-ms="220" status="PASS"/>
+      </class>
+
+      <class name="pl.tnt.tjb.test.simple.SimpleTest">
+        <test-method signature="getFirstUserDataTest()[pri:0, instance:pl.tnt.tjb.test.simple.SimpleTest@23986957]"
+                     started-at="2026-27-01T12:35:58 UTC" name="getFirstUserDataTest"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="74" status="PASS"/>
+        <test-method signature="verifyHeadersAreSent()[pri:0, instance:pl.tnt.tjb.test.simple.SimpleTest@23986957]"
+                     started-at="2026-27-01T12:35:58 UTC" name="verifyHeadersAreSent"
+                     finished-at="2026-27-01T12:35:58 UTC" duration-ms="484" status="PASS"/>
+        <test-method signature="verifySecondUserLastNameTest()[pri:0, instance:pl.tnt.tjb.test.simple.SimpleTest@23986957]"
+                     started-at="2026-27-01T12:35:58 UTC" name="verifySecondUserLastNameTest"
+                     finished-at="2026-27-01T12:35:59 UTC" duration-ms="274" status="PASS"/>
+      </class>
+
+    </test>
+  </suite>
+</testng-results>
