@@ -1,0 +1,466 @@
+{
+  "name": "Agent on Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "userIds": "8784071879"
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "863bb5f4-303e-4065-8123-caa5758b92b0",
+      "name": "Telegram Trigger",
+      "webhookId": "17707047-4e2d-47e0-8d9c-1bbb5bd0401a",
+      "credentials": {
+        "telegramApi": {
+          "id": "Q8hAnn0OnjYtxoxt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "344a41c5-06d1-48dc-a2b5-f4e37e0bd209"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "text"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "1a27f7f1-f4fc-4255-bbe6-c4a4e3d6a425",
+                    "leftValue": "={{ $json.message.voice.file_id }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "fceb22b8-7a4a-4445-81eb-78709e69f7b6",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9f7a63c2-e8e4-48c4-9b28-f44bd6b12377",
+              "name": "message",
+              "value": "={{ $json.message.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -256
+      ],
+      "id": "13cd95fc-9eec-4262-9594-46b27b2f516e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message }}",
+        "options": {
+          "systemMessage": "You are an AI test results buddy running inside n8n.\\n\\nYou help the user quickly understand how automated tests went on a given day.\\nYou are not a raw log viewer — you ANALYZE and SUMMARIZE results like a helpful QA teammate.\\n\\nYou have access to exactly one tool:\\n\\nTOOL\\nName: get_test_results  \\nInput: { \\\"date\\\": \\\"yyyy-mm-dd\\\" }\\n\\nThe tool returns either:\\n1) JSON list with:\\n   - summary: { passed, failed, skipped, total }\\n   - tests: [{ name, status, className, errorMessage }]\\nOR\\n2) Information that no tests were executed that day.\\n\\n--------------------------------------------------\\n📅 DATE HANDLING (VERY IMPORTANT)\\n\\nThe user can ask using:\\n- \\\"dzisiaj\\\"\\n- \\\"wczoraj\\\"\\n- a specific date like \\\"28 stycznia 2026\\\"\\n\\nAssume today's date is: **2026-01-29** (Europe/Warsaw)\\n\\nTranslate before calling the tool:\\n- \\\"dzisiaj\\\" → 2026-01-29\\n- \\\"wczoraj\\\" → 2026-01-28\\n- \\\"28 stycznia 2026\\\" → 2026-01-28\\n\\nIf the date is unclear (e.g. “w poniedziałek”), ask ONE short clarification question.\\n\\n--------------------------------------------------\\n🔧 WHEN TO USE THE TOOL\\n\\n- Always call get_test_results to answer about a specific day.\\n- If the user asks about multiple days, call the tool separately for each day.\\n- Never invent results.\\n\\n--------------------------------------------------\\n🧠 HOW YOU SHOULD THINK ABOUT RESULTS\\n\\nYou are here to:\\n✔ explain what happened  \\n✔ summarize failures in human language  \\n❌ NOT dump raw stack traces  \\n❌ NOT paste huge error messages without explanation  \\n\\nIf there are failures, your job is to first explain patterns and causes, then show details.\\n\\n--------------------------------------------------\\n🗣️ RESPONSE STYLE\\n\\nWrite like a friendly, technical teammate.\\nPolish language. Natural. No corporate tone. No fluff.\\n\\nStructure EVERY response like this:\\n\\n--------------------------------------------------\\n📊 Wyniki testów — YYYY-MM-DD\\n\\n1️⃣ PODSUMOWANIE (zawsze pierwsze)\\n\\nExample format:\\nPodsumowanie:  \\n✅ Przeszło: X  \\n❌ Nie przeszło: Y  \\n⏭ Pominięte: Z  \\n📦 Łącznie: T  \\n\\n--------------------------------------------------\\n2️⃣ CO SIĘ WYDARZYŁO (tylko jeśli są błędy)\\n\\nShort human explanation of what likely went wrong.\\n\\nRules:\\n- Group failures by className if possible\\n- Look at errorMessage and summarize PROBLEM TYPE (np. timeouty, 500 z API, walidacja JSON, null pointer, itp.)\\n- DO NOT paste full stack traces\\n- DO NOT repeat the same error text many times\\n- Focus on patterns\\n\\nExample style:\\n\\\"Większość błędów pochodzi z testów klasy X i wygląda na problem z odpowiedzią API (HTTP 500). Kilka testów padło też na walidacji JSON.\\\"\\n\\n--------------------------------------------------\\n3️⃣ SZCZEGÓŁY TECHNICZNE\\n\\nNow give structured list grouped by status in this order:\\n\\n❌ FAILED  \\n⏭ SKIPPED  \\n✅ PASSED  \\n\\nEach test in one line:\\nSTATUS — testName (className)  \\nIf FAIL → add short trimmed error message\\n\\nExample:\\n❌ shouldCreateUser (UserApiTest) → Expected 201 but got 500  \\n✅ shouldLoginUser (AuthTest)\\n\\nKeep it readable. No walls of text.\\n\\n--------------------------------------------------\\n🚫 NO RESULTS CASE\\n\\nIf the tool says no tests ran that day:\\n\\n\\\"Brak wyników — tego dnia testy nie były uruchamiane.\\\"\\n\\nNothing else. No fake summaries.\\n\\n--------------------------------------------------\\n📦 DATA RULES\\n\\n- If multiple result objects are returned → merge them:\\n  - Sum summary numbers\\n  - Combine test lists\\n- Treat status case-insensitively (PASS, pass, Fail, etc.)\\n- Missing errorMessage → ignore or write \\\"(brak szczegółów)\\\"\\n\\n--------------------------------------------------\\n🎯 YOUR JOB IN ONE SENTENCE\\n\\nNajpierw dajesz szybkie podsumowanie, potem ludzkie wyjaśnienie błędów, a dopiero na końcu szczegółową listę testów."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        960,
+        -192
+      ],
+      "id": "a1bdc185-8326-45c3-8273-fb95ac30c769",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        944,
+        16
+      ],
+      "id": "1f8c89ac-770b-4942-b551-c7b9ebf41cfc",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "HBKH5J5xS9KZDLvh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        1088,
+        48
+      ],
+      "id": "5753ba58-b2f4-44fb-b0d4-724fc8d00cc8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.html }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1472,
+        -192
+      ],
+      "id": "df89e7f5-c1ba-4dd2-9566-03e9d8dc21a9",
+      "name": "Send a text message",
+      "webhookId": "7fffe88d-cac1-46b2-b25e-3bba9e8cb01a",
+      "credentials": {
+        "telegramApi": {
+          "id": "Q8hAnn0OnjYtxoxt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "function escapeHtml(text) {\n  return text\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;');\n}\n\nfunction cleanLatex(text) {\n  return text\n    // usuń $...$\n    .replace(/\\$(.*?)\\$/g, '$1')\n\n    // latex multiplication\n    .replace(/\\\\times/g, '×');\n}\n\nfunction markdownToTelegramHtml(text) {\n  if (!text) return text;\n\n  let cleaned = cleanLatex(text);\n  let escaped = escapeHtml(cleaned);\n\n  escaped = escaped\n    // bold **text**\n    .replace(/\\*\\*(.*?)\\*\\*/g, '<b>$1</b>')\n\n    // italic *text*\n    .replace(/\\*(.*?)\\*/g, '<i>$1</i>')\n\n    // code `text`\n    .replace(/`(.*?)`/g, '<code>$1</code>');\n\n  return escaped;\n}\n\nfor (const item of $input.all()) {\n  const text = item.json.output;\n  item.json.html = markdownToTelegramHtml(text);\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        -192
+      ],
+      "id": "281cbb69-66d4-48d7-a5f0-ccc20d2b6c93",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        384,
+        176
+      ],
+      "id": "2661a3f9-13d1-4211-aaa0-cec7eb6a27fc",
+      "name": "Get a file",
+      "webhookId": "cc261c45-bc25-40c1-8a6b-71ea1342bdc1",
+      "credentials": {
+        "telegramApi": {
+          "id": "Q8hAnn0OnjYtxoxt",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "inputType": "binary",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        560,
+        256
+      ],
+      "id": "cbef32d9-3637-45d7-b379-8ec59d5a65fb",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "HBKH5J5xS9KZDLvh",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7df6d7f4-4421-42cf-8598-a90522b19208",
+              "name": "message",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        704,
+        80
+      ],
+      "id": "2bf099a3-d574-4eb9-833d-2b766727c76b",
+      "name": "Set transcription"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "PcHvUql7Cec122lZ",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/PcHvUql7Cec122lZ",
+          "cachedResultName": "Get Demo Test Results"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('date', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "date"
+          ],
+          "schema": [
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1216,
+        112
+      ],
+      "id": "5c3ff518-9005-43e2-be4e-782328f1525a",
+      "name": "get_test_results"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Set transcription",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set transcription": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get_test_results": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "8804e1eb-a82f-4fb1-ab4c-9235a07cf47e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4960b205f4a3ca4fe732d0dac6c479b0ee6dd00c650c2646bad688ce296fea5b"
+  },
+  "id": "Qccby18sUkhczKLQ",
+  "tags": []
+}
