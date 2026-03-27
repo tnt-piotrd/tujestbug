@@ -1,0 +1,268 @@
+{
+  "name": "(re)Create Testing Strategy Prompt",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "233dd026-5639-4e59-abb9-a09ed701e6d3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.testingStrategyPromptFileName }}",
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "58c9f124-0f91-4751-8db5-21d87ed351c1",
+      "name": "Search for SystemPrompt",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e7e588fa-0fdc-4d33-bad3-e0e2165853e6",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        0
+      ],
+      "id": "90a53fb4-94ad-4610-bf27-77b5ff738347",
+      "name": "If file exists"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03a60592-5f55-4eb2-9b36-cba699dcc03a",
+              "name": "testingStrategyPromptFileName",
+              "value": "TJB_Testing_Strategy",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "e60a61eb-7b8e-40f1-a243-cc1b8c08bc64",
+      "name": "Set System Prompt filename"
+    },
+    {
+      "parameters": {
+        "folderId": "1UdEOEkvE399ciiA2F9OmHbkiEzONVdsG",
+        "title": "={{ $('Set System Prompt filename').item.json.systemPromptFileName }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        624,
+        16
+      ],
+      "id": "98bc52cf-f020-4601-85af-4c68b945be3f",
+      "name": "Create a system prompt file",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "Generate 2-3 test cases. Include at least one positive and one negative scenario. Keep test cases simple and practical."
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        816,
+        16
+      ],
+      "id": "c1749e90-bb45-48f9-932c-04b1814c56fb",
+      "name": "Fill system prompt message",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {
+          "deletePermanently": false
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        368,
+        -144
+      ],
+      "id": "0ca9b3c4-c19c-4528-b169-7ab7d1b7afaa",
+      "name": "Delete System Prompt",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {
+          "systemPromptFileName": "TJB_SystemPrompt"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set System Prompt filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for SystemPrompt": {
+      "main": [
+        [
+          {
+            "node": "If file exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If file exists": {
+      "main": [
+        [
+          {
+            "node": "Delete System Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a system prompt file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set System Prompt filename": {
+      "main": [
+        [
+          {
+            "node": "Search for SystemPrompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a system prompt file": {
+      "main": [
+        [
+          {
+            "node": "Fill system prompt message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete System Prompt": {
+      "main": [
+        [
+          {
+            "node": "Create a system prompt file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3f9d2a1c-b5ae-4579-898f-2e096689ddf2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "cK4YAsdGpVzdkAj8",
+  "tags": []
+}
