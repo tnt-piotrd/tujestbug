@@ -1,0 +1,357 @@
+{
+  "name": "Initial Setup",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        -320
+      ],
+      "id": "233dd026-5639-4e59-abb9-a09ed701e6d3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "03a60592-5f55-4eb2-9b36-cba699dcc03a",
+              "name": "testingStrategyPromptFileName",
+              "value": "TJB_Testing_Strategy",
+              "type": "string"
+            },
+            {
+              "id": "f8c37708-3ec7-4922-bed4-25936aa6f146",
+              "name": "aiTestCasesDirectoryId",
+              "value": "1uprknl_dzzi5PhTyzKvpQN13aV-MGY44",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -528,
+        -320
+      ],
+      "id": "e60a61eb-7b8e-40f1-a243-cc1b8c08bc64",
+      "name": "Set Testing Strategy Prompt filename"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "User Stories",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.aiTestCasesDirectoryId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -272,
+        -496
+      ],
+      "id": "7139f480-2d54-483e-b7ce-7727e3449c5e",
+      "name": "Create folder for User Stories",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "Test Cases",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.aiTestCasesDirectoryId }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -272,
+        -288
+      ],
+      "id": "d3cadc92-3196-4e74-aa10-f1f336003a29",
+      "name": "Create folder for Test Cases",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $json.aiTestCasesDirectoryId }}",
+        "title": "={{ $json.testingStrategyPromptFileName }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -272,
+        -80
+      ],
+      "id": "235c2864-b922-4d6f-bda1-b0148ab97ba4",
+      "name": "Create Testing Strategy Prompt",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Generate 2-3 test cases. \nInclude at least one positive and one negative scenario. \nKeep test cases simple and practical."
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -80
+      ],
+      "id": "c1749e90-bb45-48f9-932c-04b1814c56fb",
+      "name": "Fill strategy prompt message",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $json.id }}",
+        "title": "US01-Temporarily Lock Account"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -64,
+        -656
+      ],
+      "id": "3d4bf99d-7266-46f3-9148-82e607e7d6db",
+      "name": "Create User Story Example A",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Title: Temporary account lockout after consecutive failed logins\n\nDescription:\n As a registered user,\n I want my account to be temporarily locked after several failed login attempts,\n so that my account is protected against brute-force attacks.\n\nDetails:\n If the number of failed login attempts exceeds a defined threshold within a specific time window, the account should be temporarily locked.\nDuring the lockout period, the user should not be able to log in, even with correct credentials.\n After the lockout period expires, the user should be able to attempt logging in again.\nThis story depends on the mechanism for tracking failed login attempts.\n\n"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        144,
+        -656
+      ],
+      "id": "86c01532-d45c-4d6d-b2cf-dd4dcd55f7ef",
+      "name": "Fill example A",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "={{ $json.id }}",
+        "title": "US02-Reset Failed Attempts After Successful Login"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        -48,
+        -416
+      ],
+      "id": "1791e733-49ee-4a85-a2e2-b895383b8d01",
+      "name": "Create User Story Example B",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Title: Reset failed login attempts after successful authentication\n\nDescription:\n As a registered user,\n I want my failed login attempts to be reset after a successful login,\n so that occasional mistakes do not lead to unnecessary account lockout.\n\nDetails:\n Once a user successfully authenticates, any previously recorded failed login attempts should be cleared.\nThis ensures that only consecutive failed attempts contribute to potential account lockout and improves overall user experience."
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        160,
+        -416
+      ],
+      "id": "131a417f-93ba-4a9e-a99c-ef196a0ba031",
+      "name": "Fill example B",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "q0uL2l1GOJzAjIFq",
+          "name": "Google Docs account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {}
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Set Testing Strategy Prompt filename",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Testing Strategy Prompt filename": {
+      "main": [
+        [
+          {
+            "node": "Create folder for User Stories",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create folder for Test Cases",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Testing Strategy Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Testing Strategy Prompt": {
+      "main": [
+        [
+          {
+            "node": "Fill strategy prompt message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder for User Stories": {
+      "main": [
+        [
+          {
+            "node": "Create User Story Example A",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create User Story Example B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create User Story Example A": {
+      "main": [
+        [
+          {
+            "node": "Fill example A",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder for Test Cases": {
+      "main": [
+        []
+      ]
+    },
+    "Create User Story Example B": {
+      "main": [
+        [
+          {
+            "node": "Fill example B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5c03f049-5538-424d-93b5-921ae4ffc6c1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "cK4YAsdGpVzdkAj8",
+  "tags": []
+}
