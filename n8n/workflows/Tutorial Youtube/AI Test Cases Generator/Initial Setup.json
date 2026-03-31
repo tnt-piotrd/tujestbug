@@ -6,10 +6,10 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -736,
-        -320
+        -672,
+        336
       ],
-      "id": "233dd026-5639-4e59-abb9-a09ed701e6d3",
+      "id": "48bdee6b-994c-4a2a-bf8b-b282d4c044c3",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -25,7 +25,7 @@
             {
               "id": "f8c37708-3ec7-4922-bed4-25936aa6f146",
               "name": "aiTestCasesDirectoryId",
-              "value": "1uprknl_dzzi5PhTyzKvpQN13aV-MGY44",
+              "value": ">>> Google DRIVE ID <<<",
               "type": "string"
             }
           ]
@@ -35,10 +35,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -528,
-        -320
+        -464,
+        336
       ],
-      "id": "e60a61eb-7b8e-40f1-a243-cc1b8c08bc64",
+      "id": "f3d326b7-152d-4286-b830-950df36d5b16",
       "name": "Set Testing Strategy Prompt filename"
     },
     {
@@ -60,15 +60,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -272,
-        -496
+        -208,
+        160
       ],
-      "id": "7139f480-2d54-483e-b7ce-7727e3449c5e",
+      "id": "cfb5744d-90b5-4569-88cb-a201878793ef",
       "name": "Create folder for User Stories",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "Li7uaQ2QJkiU1wKX",
-          "name": "Google Drive account"
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
         }
       }
     },
@@ -91,15 +91,15 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -272,
-        -288
+        -208,
+        368
       ],
-      "id": "d3cadc92-3196-4e74-aa10-f1f336003a29",
+      "id": "a9bffff4-1ce4-4d1b-b971-08e5ba62f69f",
       "name": "Create folder for Test Cases",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "Li7uaQ2QJkiU1wKX",
-          "name": "Google Drive account"
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
         }
       }
     },
@@ -111,15 +111,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        -272,
-        -80
+        -208,
+        576
       ],
-      "id": "235c2864-b922-4d6f-bda1-b0148ab97ba4",
+      "id": "b2954fdf-27e8-4234-a5b7-a88b33c2e53c",
       "name": "Create Testing Strategy Prompt",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     },
@@ -139,15 +139,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        -48,
-        -80
+        16,
+        576
       ],
-      "id": "c1749e90-bb45-48f9-932c-04b1814c56fb",
+      "id": "091e6919-73d1-4f25-915a-038182ab286e",
       "name": "Fill strategy prompt message",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     },
@@ -159,15 +159,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        -64,
-        -656
+        0,
+        0
       ],
-      "id": "3d4bf99d-7266-46f3-9148-82e607e7d6db",
+      "id": "7be4d5f7-d149-4363-a820-b109d605e3a9",
       "name": "Create User Story Example A",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     },
@@ -179,7 +179,7 @@
           "actionFields": [
             {
               "action": "insert",
-              "text": "=Title: Temporary account lockout after consecutive failed logins\n\nDescription:\n As a registered user,\n I want my account to be temporarily locked after several failed login attempts,\n so that my account is protected against brute-force attacks.\n\nDetails:\n If the number of failed login attempts exceeds a defined threshold within a specific time window, the account should be temporarily locked.\nDuring the lockout period, the user should not be able to log in, even with correct credentials.\n After the lockout period expires, the user should be able to attempt logging in again.\nThis story depends on the mechanism for tracking failed login attempts.\n\n"
+              "text": "=Title: Temporary account lockout after consecutive failed logins\n\nDescription:\n As a registered user,\n I want my account to be temporarily locked after several failed login attempts,\n so that my account is protected against brute-force attacks.\n\nDetails:\n If the number of failed login attempts exceeds a defined threshold within a specific time window, the account should be temporarily locked.\nDuring the lockout period, the user should not be able to log in, even with correct credentials.\n After the lockout period expires, the user should be able to attempt logging in again.\nThreshold limit should be configurable in the app.config. By default the value should be set to 5."
             }
           ]
         }
@@ -187,15 +187,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        144,
-        -656
+        208,
+        0
       ],
-      "id": "86c01532-d45c-4d6d-b2cf-dd4dcd55f7ef",
+      "id": "523eab72-a3a9-42cc-99dd-1d0cf8c90378",
       "name": "Fill example A",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     },
@@ -207,15 +207,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        -48,
-        -416
+        16,
+        240
       ],
-      "id": "1791e733-49ee-4a85-a2e2-b895383b8d01",
+      "id": "dd3a66bd-9d1e-448e-b0b0-7cb3d8abb56d",
       "name": "Create User Story Example B",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     },
@@ -235,15 +235,15 @@
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
-        160,
-        -416
+        224,
+        240
       ],
-      "id": "131a417f-93ba-4a9e-a99c-ef196a0ba031",
+      "id": "889431fd-21fd-4131-b567-7b44eaa0ed04",
       "name": "Fill example B",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "q0uL2l1GOJzAjIFq",
-          "name": "Google Docs account"
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
         }
       }
     }
@@ -326,11 +326,6 @@
         ]
       ]
     },
-    "Create folder for Test Cases": {
-      "main": [
-        []
-      ]
-    },
     "Create User Story Example B": {
       "main": [
         [
@@ -347,11 +342,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "5c03f049-5538-424d-93b5-921ae4ffc6c1",
+  "versionId": "0eae9542-7dd5-4645-b05b-79004d1835da",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
   },
-  "id": "cK4YAsdGpVzdkAj8",
+  "id": "Qyf6qA6pnl1g1Tbd",
   "tags": []
 }
