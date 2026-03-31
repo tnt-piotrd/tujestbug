@@ -1,0 +1,422 @@
+{
+  "name": "Write TestCases to Google Sheets",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        16
+      ],
+      "id": "46a48780-0bcd-46ca-b40f-7a1e6ae1bdf9",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1HoZ_TgR5qImkhYtMvsiUyMOAgHGr-xRASxBHI-Nh3kY",
+          "mode": "id"
+        },
+        "name": "={{ $('Setup data').item.json.newFileName }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1aJl2m85YYQphy2q4onFAatQHItJbogBA",
+          "mode": "list",
+          "cachedResultName": "Test Cases",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1aJl2m85YYQphy2q4onFAatQHItJbogBA"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        176,
+        144
+      ],
+      "id": "22c2ff3f-7d03-4e21-9f62-a99bfae6ec6a",
+      "name": "Copy template to local drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const tcId = $('Setup data').item.json.tcId;\nconst tcName = $('Setup data').item.json.tcName;\nconst steps = $('Setup data').item.json.steps;\nconst fileId = $json.id;\n\n// nagłówek test case\nconst headerRow = {\n  \"Test Case ID\": tcId,\n  \"Test Case Name\": tcName,\n  \"Step\": \"\",\n  \"Expected Outcome\": \"\",\n  \"Actual Outcome\": \"\",\n  \"Has step passed?\": \"\"\n};\n\n// kroki z numeracją\nconst stepRows = steps.map((step, index) => {\n  return {\n    \"Test Case ID\": \"\",\n    \"Test Case Name\": \"\",\n    \"Step\": `${index + 1}. ${step.name}`,\n    \"Expected Outcome\": step.expectedOutcome,\n    \"Actual Outcome\": \"\",\n    \"Has step passed?\": \"\"\n  };\n});\n\nconst rows = [headerRow, ...stepRows];\n\nreturn {\n  json: {\n    fileId,\n    rows\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        0
+      ],
+      "id": "b9403d00-2ab2-4d55-8446-01985507bc80",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "rows",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "fileId",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        528,
+        0
+      ],
+      "id": "0d7a17e3-f16f-4adb-8111-0d440dbf5023",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "={{ $json.fileId }}",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "=TestCases",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Test Case ID": "={{ $json.rows['Test Case ID'] }}",
+            "Test Case Name": "={{ $json.rows['Test Case Name'] }}",
+            "Step": "={{ $json.rows.Step }}",
+            "Expected Outcome": "={{ $json.rows['Expected Outcome'] }}",
+            "Actual Outcome": "={{ $json.rows['Actual Outcome'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Test Case ID",
+              "displayName": "Test Case ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Test Case Name",
+              "displayName": "Test Case Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Step",
+              "displayName": "Step",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Expected Outcome",
+              "displayName": "Expected Outcome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Actual Outcome",
+              "displayName": "Actual Outcome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Has step passed?",
+              "displayName": "Has step passed?",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        704,
+        0
+      ],
+      "id": "ff471224-73fa-46ab-aeec-6b6d33166f20",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rWw6BbWGIUgrQZOe",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.newFileName }}",
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -240,
+        16
+      ],
+      "id": "05c4abe2-4da8-4e26-ac81-fadae6eb9a49",
+      "name": "Search files and folders",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "Li7uaQ2QJkiU1wKX",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "34e9254c-51f7-4751-92e5-61132acb96e2",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        16
+      ],
+      "id": "c8dcf5d2-c3a2-445f-91a5-acdc0fd581d1",
+      "name": "If spreadsheet already exists"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0e84b851-60db-492b-a7ba-05ce51523d94",
+              "name": "tcId",
+              "value": "={{ $json.tcId }}",
+              "type": "string"
+            },
+            {
+              "id": "5c0ee200-19ae-48ab-9b10-bb6318850ed8",
+              "name": "tcName",
+              "value": "={{ $json.tcName }}",
+              "type": "string"
+            },
+            {
+              "id": "4b5adb42-997e-4e24-a3dd-95ccd70f8281",
+              "name": "steps",
+              "value": "={{ $json.steps }}",
+              "type": "array"
+            },
+            {
+              "id": "ebc6e4b5-bf4d-4165-9a76-068f305bc5f7",
+              "name": "newFileName",
+              "value": "=Tcs_For_{{ $json.userStoryName }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "43adfadb-2e0a-413c-ba29-23e521ae1091",
+      "name": "Setup data"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "userStoryName": "US-1234 Track Failed Login Attempts",
+          "tcId": "TC01",
+          "tcName": "Verify single failed login attempt is recorded",
+          "steps": [
+            {
+              "name": "Navigate to the login page.",
+              "expectedOutcome": "The login page is successfully displayed."
+            },
+            {
+              "name": "Enter a valid username and an incorrect password.",
+              "expectedOutcome": "The entered username and incorrect password are shown in their respective fields."
+            },
+            {
+              "name": "Click the \"Login\" button.",
+              "expectedOutcome": "The system attempts to log in the user."
+            },
+            {
+              "name": "Verify that an error message indicating invalid credentials is displayed.",
+              "expectedOutcome": "An error message indicating invalid credentials (e.g., \"Invalid username or password\") is displayed on the login page."
+            },
+            {
+              "name": "Access the system logs or database to confirm that one failed login attempt is recorded for the entered username.",
+              "expectedOutcome": "The system logs or database confirm that one failed login attempt is recorded for the entered username."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Setup data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy template to local drive": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search files and folders": {
+      "main": [
+        [
+          {
+            "node": "If spreadsheet already exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If spreadsheet already exists": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Copy template to local drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup data": {
+      "main": [
+        [
+          {
+            "node": "Search files and folders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7322ab8a-2972-4854-bd16-2ba941cbe4ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "6jTd0EMGrG5XOa8t",
+  "tags": []
+}
