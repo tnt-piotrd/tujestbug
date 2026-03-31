@@ -8,10 +8,10 @@
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1.1,
       "position": [
-        -640,
+        -992,
         16
       ],
-      "id": "46a48780-0bcd-46ca-b40f-7a1e6ae1bdf9",
+      "id": "0d68b763-1ed2-4b74-8c43-322f3d69a6e6",
       "name": "When Executed by Another Workflow"
     },
     {
@@ -31,25 +31,25 @@
         },
         "folderId": {
           "__rl": true,
-          "value": "1aJl2m85YYQphy2q4onFAatQHItJbogBA",
+          "value": "1rxs8RAlcST6xs8tHX4VIU4_NJtzAGtLN",
           "mode": "list",
           "cachedResultName": "Test Cases",
-          "cachedResultUrl": "https://drive.google.com/drive/folders/1aJl2m85YYQphy2q4onFAatQHItJbogBA"
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1rxs8RAlcST6xs8tHX4VIU4_NJtzAGtLN"
         },
         "options": {}
       },
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        176,
+        -176,
         144
       ],
-      "id": "22c2ff3f-7d03-4e21-9f62-a99bfae6ec6a",
+      "id": "77b2eec9-1437-448b-ad9b-cc70ff7e8612",
       "name": "Copy template to local drive",
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "Li7uaQ2QJkiU1wKX",
-          "name": "Google Drive account"
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
         }
       }
     },
@@ -61,10 +61,10 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        352,
+        0,
         0
       ],
-      "id": "b9403d00-2ab2-4d55-8446-01985507bc80",
+      "id": "a92b990b-7b8c-45a4-8c68-91f2689047dc",
       "name": "Code in JavaScript"
     },
     {
@@ -77,10 +77,10 @@
       "type": "n8n-nodes-base.splitOut",
       "typeVersion": 1,
       "position": [
-        528,
+        176,
         0
       ],
-      "id": "0d7a17e3-f16f-4adb-8111-0d440dbf5023",
+      "id": "950dda6a-f9ea-446e-bcfb-c1805a9a385f",
       "name": "Split Out"
     },
     {
@@ -176,15 +176,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        704,
+        352,
         0
       ],
-      "id": "ff471224-73fa-46ab-aeec-6b6d33166f20",
+      "id": "9b852563-32f7-4d6f-9912-c65f71c6c792",
       "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "rWw6BbWGIUgrQZOe",
-          "name": "Google Sheets account"
+          "id": "3s1MuFbUTipcgY02",
+          "name": "Google Sheets account 2"
         }
       }
     },
@@ -200,16 +200,16 @@
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 3,
       "position": [
-        -240,
+        -592,
         16
       ],
-      "id": "05c4abe2-4da8-4e26-ac81-fadae6eb9a49",
+      "id": "e212739d-63e6-4f94-8bad-1d08a96bf0b6",
       "name": "Search files and folders",
       "alwaysOutputData": true,
       "credentials": {
         "googleDriveOAuth2Api": {
-          "id": "Li7uaQ2QJkiU1wKX",
-          "name": "Google Drive account"
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
         }
       }
     },
@@ -241,10 +241,10 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -48,
+        -400,
         16
       ],
-      "id": "c8dcf5d2-c3a2-445f-91a5-acdc0fd581d1",
+      "id": "576c8d94-81de-41f9-a481-64c825e1ff96",
       "name": "If spreadsheet already exists"
     },
     {
@@ -282,10 +282,10 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        -448,
+        -800,
         16
       ],
-      "id": "43adfadb-2e0a-413c-ba29-23e521ae1091",
+      "id": "b7677966-7ee5-4364-8bfb-8771ed3f1fb0",
       "name": "Setup data"
     }
   ],
@@ -293,29 +293,21 @@
     "When Executed by Another Workflow": [
       {
         "json": {
-          "userStoryName": "US-1234 Track Failed Login Attempts",
+          "userStoryName": "US01-Temporarily Lock Account",
           "tcId": "TC01",
-          "tcName": "Verify single failed login attempt is recorded",
+          "tcName": "Successfully log in after lockout period expires",
           "steps": [
             {
-              "name": "Navigate to the login page.",
-              "expectedOutcome": "The login page is successfully displayed."
+              "name": "Attempt to log in with incorrect credentials five times.",
+              "expectedOutcome": "Account is temporarily locked after five failed login attempts."
             },
             {
-              "name": "Enter a valid username and an incorrect password.",
-              "expectedOutcome": "The entered username and incorrect password are shown in their respective fields."
+              "name": "Wait for the lockout period to expire.",
+              "expectedOutcome": "Lockout period successfully expires, allowing login attempts to resume."
             },
             {
-              "name": "Click the \"Login\" button.",
-              "expectedOutcome": "The system attempts to log in the user."
-            },
-            {
-              "name": "Verify that an error message indicating invalid credentials is displayed.",
-              "expectedOutcome": "An error message indicating invalid credentials (e.g., \"Invalid username or password\") is displayed on the login page."
-            },
-            {
-              "name": "Access the system logs or database to confirm that one failed login attempt is recorded for the entered username.",
-              "expectedOutcome": "The system logs or database confirm that one failed login attempt is recorded for the entered username."
+              "name": "Attempt to log in with correct credentials.",
+              "expectedOutcome": "Login is successful with correct credentials post-lockout."
             }
           ]
         }
@@ -412,11 +404,11 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "7322ab8a-2972-4854-bd16-2ba941cbe4ad",
+  "versionId": "86648ca7-e928-465b-b1b6-806024037157",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
   },
-  "id": "6jTd0EMGrG5XOa8t",
+  "id": "XvkoJQ62YDtY4yC1",
   "tags": []
 }
