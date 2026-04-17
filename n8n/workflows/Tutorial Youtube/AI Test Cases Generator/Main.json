@@ -1,0 +1,300 @@
+{
+  "name": "Main",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "26ee9c40-0a8e-4b2e-ae9d-0215b97845be",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "filter": {
+          "folderId": {
+            "__rl": true,
+            "value": "={{ $('Mandatory Dir Ids Setup').item.json.UserStoriesDirectoryID }}",
+            "mode": "id"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "c3b86641-10a6-407a-8cf8-5e31cd622d99",
+      "name": "Get All User Stories",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "BoR844TtDLwWSliB",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/BoR844TtDLwWSliB",
+          "cachedResultName": "Generate Test Cases For Given User Story"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "FileName": "={{ $json.name }}",
+            "UserStoryFileID": "={{ $json.id }}",
+            "TestStrategyPromptFileID": "={{ $('Search for TestingStrategyPrompt').item.json.id }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "TestStrategyPromptFileID",
+              "displayName": "TestStrategyPromptFileID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "UserStoryFileID",
+              "displayName": "UserStoryFileID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "FileName",
+              "displayName": "FileName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1088,
+        16
+      ],
+      "id": "5cca44c5-b66c-490d-bf78-61c97eab266b",
+      "name": "Call 'Generate Test Cases For Given User Story'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "XvkoJQ62YDtY4yC1",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/XvkoJQ62YDtY4yC1",
+          "cachedResultName": "Write TestCases to Google Sheets"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1312,
+        16
+      ],
+      "id": "aac2e8a4-1bc0-43b6-bca8-b2b2fddea3c6",
+      "name": "Call 'Write TestCases to Google Sheets'"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        832,
+        0
+      ],
+      "id": "4872de42-4b9e-486d-8830-b71226b98339",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1eb74196-2acc-4c96-bc85-54242de1f128",
+              "name": "UserStoriesDirectoryID",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "9ca159a7-f751-4e8d-b774-949f1b22fd51",
+              "name": "TestCasesDirectoryID",
+              "value": "",
+              "type": "string"
+            },
+            {
+              "id": "bb140c4c-0ace-492f-b96e-ffb9aa89d343",
+              "name": "TestingStrategyPromptFileName",
+              "value": "TJB_Testing_Strategy",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4e85bc9c-6989-4a6b-85f8-b8276aef715b",
+      "name": "Mandatory Dir Ids Setup"
+    },
+    {
+      "parameters": {
+        "resource": "fileFolder",
+        "queryString": "={{ $json.TestingStrategyPromptFileName }}",
+        "filter": {
+          "includeTrashed": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f615a1cd-40e6-4879-bfff-093691a6124a",
+      "name": "Search for TestingStrategyPrompt",
+      "alwaysOutputData": false,
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "AouZzXUTGBKZJJbA",
+          "name": "Google Drive account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Mandatory Dir Ids Setup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All User Stories": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Generate Test Cases For Given User Story'": {
+      "main": [
+        [
+          {
+            "node": "Call 'Write TestCases to Google Sheets'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Call 'Generate Test Cases For Given User Story'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Write TestCases to Google Sheets'": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mandatory Dir Ids Setup": {
+      "main": [
+        [
+          {
+            "node": "Search for TestingStrategyPrompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search for TestingStrategyPrompt": {
+      "main": [
+        [
+          {
+            "node": "Get All User Stories",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "391cde7f-9b8a-46c9-b15c-281c2fd5dd93",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "gxfiyDBw6zCEZ1WR",
+  "tags": []
+}

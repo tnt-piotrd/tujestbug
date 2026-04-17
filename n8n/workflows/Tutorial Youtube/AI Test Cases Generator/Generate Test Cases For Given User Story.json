@@ -1,0 +1,432 @@
+{
+  "name": "Generate Test Cases For Given User Story",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "TestStrategyPromptFileID"
+            },
+            {
+              "name": "UserStoryFileID"
+            },
+            {
+              "name": "FileName"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        32
+      ],
+      "id": "37f255d4-7bc4-4196-be31-044f716c00d8",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('When Executed by Another Workflow').item.json.UserStoryFileID }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        416,
+        32
+      ],
+      "id": "f2c6a659-c22a-49bb-9d82-31a13baeef43",
+      "name": "Get user story",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        832,
+        240
+      ],
+      "id": "c8493957-32cd-4e47-b0a0-5c96d20cae2e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "loL6waEP5JM66DcF",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=this is user story:\n{{ $json.userStory }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are a Test Case Generator.\n\nTask: Generate manual test cases from the provided user story.\n\n---\n\n### STATIC RULES (DO NOT OVERRIDE)\n\n1. Each test case must have a unique \"tcId\" (e.g., TC01, TC02).\n2. Each test case must have a descriptive \"tcName\".\n3. Each test case must include a list of \"steps\" as strings (no expectedOutcome), e.g.:\n   \"steps\": [\"1. click login\", \"2. enter username\", \"3. click submit\"]\n\n4. Each test case must provide UNIQUE COVERAGE.\n   - Test cases may be similar in steps if they cover different:\n     - input values\n     - boundaries\n     - decision outcomes\n     - system states\n   - Do NOT remove test cases only because they look similar\n   - Avoid true duplicates that do not increase coverage\n\n5. Steps must be realistic, executable, and clearly ordered.\n\n6. Output MUST be a JSON array in this exact format:\n\n[\n  {\n    \"tcId\": \"TC01\",\n    \"tcName\": \"name of test case\",\n    \"steps\": [\"step 1\", \"step 2\"]\n  }\n]\n\n7. DO NOT wrap the result in any object (e.g., {\"output\": ...})\n8. DO NOT return a stringified JSON\n9. Output MUST be a raw JSON array (not inside quotes)\n\nReturn only JSON. No explanations.\n\n---\n\n### DYNAMIC TEST STRATEGY (USER-DEFINED REQUIREMENTS)\n\n{{ $json.testStrategyPrompt }}\n\n---\n\n### CRITICAL RULES (ALWAYS APPLY)\n\n1. The number and type of test cases MUST follow USER_TEST_STRATEGY if provided.\n\n2. If USER_TEST_STRATEGY does NOT define exact number of test cases:\n   - Generate enough test cases to ensure meaningful coverage\n   - Do NOT default to a minimal number if logic requires more scenarios\n\n3. Always ensure baseline coverage, regardless of strategy:\n\n   - At least one test case per:\n     - business rule\n     - major user flow\n     - possible outcome\n\n4. If the system includes any of the following, ensure they are covered:\n\n   - Multiple conditions → cover different combinations\n   - Input validation → cover valid and invalid inputs\n   - Numeric thresholds → include values below, at, and above boundaries\n   - States → include valid and invalid transitions\n\n5. Do NOT reduce the number of test cases if it decreases coverage.\n\n6. Prefer coverage completeness over minimizing the number of test cases.\n\n---\n\n### DEFAULT BEHAVIOR (IF USER DOES NOT PROVIDE STRATEGY)\n\n- Generate 3-5 test cases\n- Cover:\n  - at least one positive (happy path)\n  - at least one negative scenario\n  - at least one edge case"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        832,
+        32
+      ],
+      "id": "8067a4f3-378d-4475-943a-926e8bea0163",
+      "name": "Test Cases Generation"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        240
+      ],
+      "id": "151000f7-119e-4127-8cb5-ae6465950e52",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "loL6waEP5JM66DcF",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const userStoryName = $('Save user story details and test strategy prompt').item.json.userStoryTitle;\nconst tcId = $('Set data for generating outcome').item.json.tcId;\nconst tcName = $('Set data for generating outcome').item.json.tcName;\n\nconst steps = $('Set data for generating outcome').item.json.steps;\nconst expOutput = $json.output.expectedOutcome;\n\n// funkcja usuwająca numerację typu \"1. \", \"2. \" itd.\nconst cleanStep = (text) => {\n  return text.replace(/^\\d+\\.\\s*/, '');\n};\n\n// mapowanie step -> expectedOutcome\nconst mappedSteps = steps.map((step, index) => {\n  return {\n    name: cleanStep(step),\n    expectedOutcome: cleanStep(expOutput[index] || \"\")\n  };\n});\n\nreturn {\n  json: {\n    userStoryName,\n    tcId,\n    tcName,\n    steps: mappedSteps\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        32
+      ],
+      "id": "48a6683b-0da4-40e7-87f3-112f923c8767",
+      "name": "Setup Final Json Structure"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n  \"title\": \"ManualTestCases\",\n  \"type\": \"array\",\n  \"minItems\": 1,\n  \"maxItems\": 20,\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"tcId\": {\n        \"type\": \"string\",\n        \"description\": \"Unique identifier for the test case, e.g., TC01\",\n        \"pattern\": \"^TC\\\\d{2}$\"\n      },\n      \"tcName\": {\n        \"type\": \"string\",\n        \"description\": \"Descriptive name of the test case\"\n      },\n      \"steps\": {\n        \"type\": \"array\",\n        \"description\": \"List of steps as strings\",\n        \"items\": {\n          \"type\": \"string\",\n          \"description\": \"Description of a single step, e.g., '1. Click login button'\"\n        },\n        \"minItems\": 1\n      }\n    },\n    \"required\": [\"tcId\", \"tcName\", \"steps\"],\n    \"additionalProperties\": false\n  }\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        240
+      ],
+      "id": "ce2fbeb6-fe9d-491c-ab84-a601f57d1cc6",
+      "name": "Parse generated test cases"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"expectedOutcome\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"List of expected outcomes corresponding 1:1 to steps\"\n    }\n  },\n  \"required\": [\"expectedOutcome\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1808,
+        240
+      ],
+      "id": "8e59f5a7-ac98-4be5-ab7a-45a4420f6a46",
+      "name": "Parse generated outcome"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "1a5fd1db-b043-4356-866e-66abd88a9246",
+              "name": "userStory",
+              "value": "={{ $('Save user story details and test strategy prompt').item.json.userStory }}",
+              "type": "string"
+            },
+            {
+              "id": "674ebc55-cf3e-4bb4-9deb-77f461b147a7",
+              "name": "tcName",
+              "value": "={{ $json.tcName }}",
+              "type": "string"
+            },
+            {
+              "id": "cd400067-dbc6-4259-a14f-d8ab08a0b4ff",
+              "name": "steps",
+              "value": "={{ $json.steps }}",
+              "type": "array"
+            },
+            {
+              "id": "6773968b-a9d2-44ef-8565-0a2160e39be4",
+              "name": "tcId",
+              "value": "={{ $json.tcId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1440,
+        32
+      ],
+      "id": "57295efe-1df5-46e3-85fa-0fbe7a1698b8",
+      "name": "Set data for generating outcome"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=- userStory:  {{ $json.userStory }}\n- tcName: {{ $json.tcName }}\n- steps: {{ $json.steps }}\n- tcId: {{ $json.tcId }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a Test Step Analyzer.\n\nTask: Based on the provided input JSON, generate expected outcomes for each step.\n\nInput:\n- userStory: string\n- tcName: string\n- steps: array of strings\n- tcId: string\n\nRequirements:\n1. For each step, generate a corresponding expected outcome.\n2. The number of expected outcomes must match the number of steps.\n3. Each expected outcome should describe what should happen after performing the step.\n4. Keep expected outcomes short, clear, and directly related to the step.\n5. Preserve numbering (e.g., \"1.\", \"2.\", etc.) from the steps.\n6. Use the userStory context when needed to make outcomes accurate.\n\nOutput:\nReturn only valid JSON in the following format:\n\n{\n  \"expectedOutcome\": [\"outcome 1\", \"outcome 2\", \"outcome 3\"]\n}\n\nDo not include any explanations or additional text."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1664,
+        32
+      ],
+      "id": "a3318574-516d-4a6d-8ef1-af885d56ed3c",
+      "name": "Setup expected results"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "output",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        32
+      ],
+      "id": "95ab355b-0201-403f-b2c5-043b46850290",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $json.TestStrategyPromptFileID }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        208,
+        32
+      ],
+      "id": "db034e87-d208-4a82-bead-84d713ebf32e",
+      "name": "Get Test Strategy Prompt",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "us4GfPiNhAZnx5y8",
+          "name": "Google Docs account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "710cddc0-443e-48da-88b2-667bf6273034",
+              "name": "userStoryTitle",
+              "value": "={{ $('When Executed by Another Workflow').item.json.FileName }}",
+              "type": "string"
+            },
+            {
+              "id": "23a183f9-bfd2-494c-a456-4cdebaf1e9e3",
+              "name": "userStory",
+              "value": "={{ $json.content }}",
+              "type": "string"
+            },
+            {
+              "id": "1d1d04bd-2f88-4e47-9d37-cf1ba115e758",
+              "name": "testStrategyPrompt",
+              "value": "={{ $('Get Test Strategy Prompt').item.json.content }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        624,
+        32
+      ],
+      "id": "6d8572f3-40cb-4fa6-ad16-32698c989035",
+      "name": "Save user story details and test strategy prompt"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "TestStrategyPromptFileID": "",
+          "UserStoryFileID": "",
+          "FileName": "US01-Temporarily Lock Account"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get Test Strategy Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user story": {
+      "main": [
+        [
+          {
+            "node": "Save user story details and test strategy prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Cases Generation": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse generated test cases": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Test Cases Generation",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse generated outcome": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Setup expected results",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set data for generating outcome": {
+      "main": [
+        [
+          {
+            "node": "Setup expected results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Setup expected results": {
+      "main": [
+        [
+          {
+            "node": "Setup Final Json Structure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Set data for generating outcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Test Strategy Prompt": {
+      "main": [
+        [
+          {
+            "node": "Get user story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save user story details and test strategy prompt": {
+      "main": [
+        [
+          {
+            "node": "Test Cases Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Test Cases Generation",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Setup expected results",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5c0b4e0b-68d6-4e56-8215-06023a0e3949",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a8e17f7507674cba4b8c66d44a7aa761ad77fe315b4dc02ca0fbdf4523310b4c"
+  },
+  "id": "BoR844TtDLwWSliB",
+  "tags": []
+}
